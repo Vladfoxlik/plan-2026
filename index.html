@@ -59,7 +59,7 @@ td.cat{text-align:left;color:var(--grey);font-size:12px}
 <h1>План 2026 против фактов</h1>
 <div class="sub">Источник — таблица «План продаж 2026 (факт и план)». Столбцы .25 = факт 2025, столбцы .26: январь–июнь = факт 2026, июль–декабрь = план. 28 плановых товаров. Деньги — по «Марже (грязной)»; у 10 позиций без маржи в таблице она оценена по старым sku (ориентировочно).</div>
 <div class="toolbar"><span style="font-size:13px;color:var(--grey)">Показывать:</span>
-<div class="toggle"><button id="tU" class="on" onclick="setMode('u')">Штуки</button><button id="tM" onclick="setMode('m')">Маржа ₽</button></div></div>
+<div class="toggle"><button id="tU" class="on" onclick="setMode('u')">Штуки</button><button id="tM" onclick="setMode('m')">Маржа ₽</button></div><span style="font-size:13px;color:var(--grey);margin-left:10px">Объёмы:</span><div class="toggle"><button id="bP" class="on" onclick="setBasis('plan')">План</button><button id="bR" onclick="setBasis('rec')">Рекомендуемый</button></div></div>
 
 <div class="explain"><span class="t">📊 О чём этот отчёт</span>Сравниваем <b>план продаж на 2026</b> с тем, <b>сколько реально продалось</b>. Январь–июнь 2026 — уже факт (реальные продажи), июль–декабрь — пока план. Цель — понять: реалистичен ли план на остаток года или его завысили. Вверху справа переключатель <b>«Штуки / Маржа»</b> — единицы или маржинальная прибыль (по товарам, где задана маржа).<br><br>Четыре числа ниже: <b>Факт 2025</b> — продажи за весь прошлый год; <b>Факт янв–июнь 2026</b> — продажи в этом году; <b>План II полугодия</b> — сколько заложено продать с июля по декабрь; <b>Рост H1</b> — насколько продажи этого года выше прошлого за те же полгода.</div>
 <div class="kpis" id="kpis"></div>
@@ -80,6 +80,23 @@ td.cat{text-align:left;color:var(--grey);font-size:12px}
 <div class="card"><h2>Топ-10 по вкладу в прирост, Δ шт</h2><div class="explain"><span class="t">Что показывает</span>Кто сильнее всего увеличивает объём в 2026 (2026 факт+план минус факт 2025). <b>Фиолетовые</b> — новинки без истории, <b>зелёные</b> — существующие товары. Видно, на чём держится рост плана.</div><div class="chartbox" style="height:360px"><canvas id="contrib"></canvas></div></div>
 
 <div class="card"><h2>Реалистичность плана на II полугодие</h2><div class="explain"><span class="t">Что это и как читать — самое важное</span>Проверка, <b>реалистичен ли план</b> на июль–декабрь. Считаем не одно число, а <b>диапазон разумного</b>: нижняя граница — если товар продолжит текущий темп 2026 без сезонного роста; верхняя — если сработает сезонность как в 2025 (второе полугодие выше первого). Так мы учитываем сезонность, но не завышаем ожидание раздутым ростом слабого первого полугодия 2025.<br><br><b>Если план попадает в диапазон</b> — он реалистичен (<span style="color:var(--green);font-weight:bold">зелёный</span>). <b>Ниже</b> диапазона — занижен, риск дефицита (<span style="color:var(--info);font-weight:bold">синий</span>). <b>Выше</b> верхней границы — завышен (<span style="color:var(--amber);font-weight:bold">жёлтый</span>) или сильно оторван (<span style="color:var(--red);font-weight:bold">красный</span>). Полоска — план ÷ верхняя (сезонная) граница: ≤1 значит план в пределах разумного, красные — кандидаты на пересмотр.</div><div class="chartbox" style="height:380px"><canvas id="real"></canvas></div></div>
+
+<div class="card"><h2>Очередность производства по марже</h2>
+<div class="explain"><span class="t">Зачем и как читать — два взгляда (переключатель ниже)</span><b>Маржа на 1 шт</b> — деньги с одной штуки. Так заполняют, когда цех ограничен в <b>штуках</b>: начиная с самых маржинальных на штуку, соберёшь максимум маржи из тех же мощностей.<br><br><b>Маржа со всего объёма</b> = маржа/шт × план. Показывает, кто приносит больше всего денег в принципе: большой объём при средней марже может дать больше, чем маленький объём при высокой. Так расставляют, если хочешь сначала делать главных «кормильцев».<br><br><b>Оговорка:</b> суммы маржи ориентировочные (часть маржи оценочная) и верны, если трудозатраты на штуку сопоставимы; иначе нужна маржа на час (дайте нормы времени).</div>
+<div class="filters" style="margin-bottom:10px"><button id="pmU" class="on" onclick="setPrio('unit')">По марже на 1 шт</button><button id="pmV" onclick="setPrio('vol')">По марже со всего объёма</button></div>
+<div class="chartbox" style="height:440px"><canvas id="prio"></canvas></div>
+<h3 style="font-size:16px;color:var(--navy);margin:20px 0 6px">Сценарий мощности: что делать, если на всё не хватает</h3>
+<div class="explain" style="margin-bottom:12px"><span class="t">Как пользоваться</span>Двигай ползунок — «сколько штук всего цех успевает за июль–декабрь». Инструмент заполняет производство в выбранном выше порядке и показывает: сколько маржи соберём, что успеваем полностью, что частично, а что не влезло.</div>
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+<input type="range" id="capSl" style="flex:1;min-width:280px" min="0" max="100" value="100">
+<div style="font-weight:bold;color:var(--navy);font-size:18px" id="capVal"></div></div>
+<div id="capSummary" style="font-size:15px;margin-bottom:12px"></div>
+<div style="max-height:460px;overflow:auto"><table id="capTbl"><thead></thead><tbody></tbody></table></div></div>
+
+<div class="card"><h2>Рекомендованный план запуска по месяцам</h2>
+<div class="explain"><span class="t">Как читать и что делать</span>Товары отсортированы по <b>марже со всего объёма</b> (кто приносит больше денег — тот выше) и разбиты на <b>волны запуска</b>: 🟢 1-я волна — запускать первыми, 🟡 2-я, 🔴 3-я (по остаточному принципу). Колонка <b>Реализм</b> предупреждает, если плановое количество завышено или это новинка без истории. Помесячно — плановые количества июль–декабрь. Колонка <b>Реком.</b> — рекомендуемый объём H2: завышенные срезаны до реалистичного коридора, новинки — «поэтапно» (запускать малыми партиями и наращивать по факту).</div>
+<div id="recNote" style="font-size:14.5px;line-height:1.6;margin-bottom:14px"></div>
+<div style="overflow:auto"><table id="launchTbl"><thead></thead><tbody></tbody></table></div></div>
 
 <div class="card"><h2>Экспертные выводы и рекомендации</h2><div id="expert" style="font-size:14.5px;line-height:1.6"></div></div>
 
@@ -143,6 +160,22 @@ P.forEach(it=>{
    else if(it.pH2<=it.expHigh*1.3)it.verdict='amber';
    else it.verdict='red';}
 });
+function recH2f(it){
+ if((it.verdict==='amber'||it.verdict==='red')&&it.expHigh)return Math.round(it.expHigh);
+ if(it.newp)return it.f26H1>0?Math.round(it.f26H1*1.3):Math.round(it.pH2*0.25);
+ return it.pH2;
+}
+P.forEach(function(it){it.planH2=it.pH2;it.planMon=it[3].slice();it.recH2=recH2f(it);
+ var f=it.planH2>0?it.recH2/it.planH2:0;var tail=it[3].slice(6,12).map(function(v){return Math.round(v*f);});
+ it.recMon=it[3].slice(0,6).concat(tail);it.CUR=it.planMon;});
+var BASIS='plan';
+function setBasis(b){BASIS=b;
+ document.getElementById('bP').classList.toggle('on',b==='plan');
+ document.getElementById('bR').classList.toggle('on',b==='rec');
+ P.forEach(function(it){var a=b==='plan'?it.planMon:it.recMon;it.CUR=a;it.pH2=sum(a,6,12);it.m2026=a.slice();it.full26=it.f26H1+it.pH2;});
+ kpi();verdict();draw();season();cats();real();contrib();tbl();prioBar();capInit();launchPlan();
+}
+
 const VC={green:'#2e7d32',amber:'#e8791a',red:'#c62828',info:'#1565c0',new:'#6a3fa0'};
 const VL={green:'реалистичен',amber:'завышен',red:'оторван',info:'занижен',new:'новинка'};
 function money(it,units){return mode==='u'?units:units*(it[6]||0);}
@@ -193,7 +226,7 @@ function draw(){const list=curList();
  const agg=fn=>MON.map((_,m)=>list.reduce((s,x)=>s+fn(x,m),0));
  const c25=agg((x,m)=>money(x,x[4][m]));
  const c26=agg((x,m)=>money(x,x.m2026[m]));
- const planM=agg((x,m)=>money(x,x[3][m]));
+ const planM=agg((x,m)=>money(x,x.CUR[m]));
  if(ch)ch.destroy();
  ch=new Chart(document.getElementById('ch'),{type:'bar',data:{labels:MON,datasets:[
   {label:'2025 факт',data:c25,backgroundColor:'#aeb9d0'},
@@ -275,6 +308,63 @@ function expert(){
  h+=`<p><b>4. Рекомендация к утверждению.</b> Если срезать завышенные и оторванные позиции до верхней границы реалистичного коридора, план второго полугодия составит <b>${fmt(recPlan)} шт</b> вместо ${fmt(ph2)} (−${Math.round((1-recPlan/ph2)*100)}%). Это более защищаемая цифра для производства и закупок; исходные амбициозные цели можно оставить как «стретч-план».</p>`;
  document.getElementById('expert').innerHTML=h;
 }
+
+// ===== Очередность производства по марже =====
+const TH1=2000,TH2=800;
+function ptier(m){if(!m)return null;return m>=TH1?1:m>=TH2?2:3;}
+const PC={1:'#2e7d32',2:'#e8791a',3:'#9e9e9e'};
+const PLBL={1:'🥇 1-я',2:'🥈 2-я',3:'🥉 3-я'};
+const fmtRub=n=>n>=1e6?(n/1e6).toFixed(2)+' млн ₽':fmt(n)+' ₽';
+let prioMode='unit';
+function prioList(){var L=P.filter(i=>i[6]&&i.pH2>0).map(i=>({n:i[0],cat:i[1],mgn:i[6],plan:i.pH2,vol:i[6]*i.pH2,t:ptier(i[6])}));
+ L.sort((a,b)=> prioMode==='unit' ? b.mgn-a.mgn : b.vol-a.vol); return L;}
+let chP;
+function prioBar(){var L=prioList();var unit=prioMode==='unit';if(chP)chP.destroy();
+ chP=new Chart(document.getElementById('prio'),{type:'bar',data:{labels:L.map(x=>x.n),datasets:[{label:unit?'маржа на 1 шт, ₽':'маржа со всего объёма, ₽',data:L.map(x=>unit?x.mgn:x.vol),backgroundColor:L.map(x=>PC[x.t])}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var x=L[c.dataIndex];return [fmt(x.mgn)+' ₽/шт · '+PLBL[x.t]+' очередь', 'план '+fmt(x.plan)+' шт · маржа с объёма '+fmtRub(x.vol)];}}}},scales:{x:{title:{display:true,text:unit?'₽ маржи на 1 шт':'₽ маржи со всего планового объёма'}}}}});
+}
+const capTot=P.reduce((s,i)=>s+(i[6]?i.pH2:0),0);
+function capRender(cap){var L=prioList();var rem=cap;var got=0;
+ var rows=L.map(function(x){var a=Math.max(0,Math.min(x.plan,rem));rem-=a;got+=a*x.mgn;return Object.assign({},x,{alloc:a});});
+ var full=rows.filter(r=>r.alloc>=r.plan).length,part=rows.filter(r=>r.alloc>0&&r.alloc<r.plan).length,none=rows.filter(r=>r.alloc===0).length;
+ document.getElementById('capVal').textContent=fmt(cap)+' шт';
+ document.getElementById('capSummary').innerHTML='При мощности <b>'+fmt(cap)+' шт</b> из '+fmt(capTot)+' соберём маржи ≈ <b style="color:var(--green)">'+fmtRub(got)+'</b> (ориентировочно). Полностью успеваем <b style="color:var(--green)">'+full+'</b>, частично <b style="color:var(--amber)">'+part+'</b>, не влезло <b style="color:var(--red)">'+none+'</b>.';
+ document.querySelector('#capTbl thead').innerHTML='<tr><th style="text-align:left">Товар</th><th>Маржа/шт</th><th>Очередь</th><th>План H2</th><th>В производство</th><th>Маржа собрано</th><th>Статус</th></tr>';
+ document.querySelector('#capTbl tbody').innerHTML=rows.map(function(r){var st=r.alloc>=r.plan?['полностью','v-green']:r.alloc>0?['частично','v-amber']:['не влезло','v-red'];
+  return '<tr><td class="name">'+r.n+'</td><td>'+fmt(r.mgn)+' ₽</td><td style="white-space:nowrap">'+PLBL[r.t]+'</td><td>'+fmt(r.plan)+'</td><td><b>'+fmt(r.alloc)+'</b></td><td>'+fmtRub(r.alloc*r.mgn)+'</td><td><span class="badge '+st[1]+'">'+st[0]+'</span></td></tr>';}).join('');
+}
+function setPrio(m){prioMode=m;document.getElementById('pmU').classList.toggle('on',m==='unit');document.getElementById('pmV').classList.toggle('on',m==='vol');prioBar();capRender(+document.getElementById('capSl').value);}
+function capInit(){var sl=document.getElementById('capSl');sl.max=capTot;sl.step=100;sl.value=Math.round(capTot*0.7/100)*100;sl.oninput=function(){capRender(+sl.value)};capRender(+sl.value);}
+
+
+
+// ===== Рекомендованный план запуска =====
+function launchPlan(){
+ var L=P.filter(function(i){return i.pH2>0;}).map(function(i){return {n:i[0],art:i[2]||'—',mgn:i[6]||0,plan:i.planH2,rec:i.recH2,vol:(i[6]||0)*i.planH2,mo:i[3].slice(6,12),v:i.verdict,exp:i.expHigh,newp:i.newp,f26:i.f26H1};});
+ L.sort(function(a,b){return b.vol-a.vol;});
+ var n=L.length;
+ L.forEach(function(x,idx){x.wave=idx<Math.ceil(n/3)?1:idx<Math.ceil(2*n/3)?2:3;});
+ var WC={1:['🟢 1-я волна','#e3f4e5','#2e7d32'],2:['🟡 2-я волна','#fff1e2','#e8791a'],3:['🔴 3-я волна','#fdecec','#c62828']};
+ var MN=['Июл','Авг','Сен','Окт','Ноя','Дек'];
+ document.querySelector('#launchTbl thead').innerHTML='<tr><th style="text-align:left">Волна</th><th style="text-align:left">Товар / Арт</th><th>Реализм</th>'+MN.map(function(m){return '<th>'+m+'</th>';}).join('')+'<th>План H2</th><th>Реком.</th></tr>';
+ document.querySelector('#launchTbl tbody').innerHTML=L.map(function(x){var w=WC[x.wave];var vl=VL[x.v]||'';
+  var recCell=x.rec<x.plan?'<b style="color:var(--amber)">'+fmt(x.rec)+'</b>':(x.newp?'<span style="color:var(--new)">поэтапно</span>':fmt(x.rec));
+  return '<tr style="border-left:5px solid '+w[2]+'"><td style="background:'+w[1]+';color:'+w[2]+';font-weight:bold;white-space:nowrap">'+w[0]+'</td>'+
+   '<td class="name">'+x.n+'<div class="cat">'+x.art+' · '+fmt(x.mgn)+' ₽/шт · маржа '+fmtRub(x.vol)+'</div></td>'+
+   '<td><span class="badge v-'+x.v+'">'+vl+'</span></td>'+
+   x.mo.map(function(v){return '<td>'+(v?fmt(v):'—')+'</td>';}).join('')+
+   '<td><b>'+fmt(x.plan)+'</b></td><td>'+recCell+'</td></tr>';}).join('');
+ var w1=L.filter(function(x){return x.wave===1;});
+ var trim=L.filter(function(x){return x.rec<x.plan;});
+ var novel=L.filter(function(x){return x.newp;}).sort(function(a,b){return b.plan-a.plan;});
+ var recTot=L.reduce(function(s,x){return s+x.rec;},0),planTot=L.reduce(function(s,x){return s+x.plan;},0);
+ var t='';
+ t+='<p><b>Запускать первыми (🟢 1-я волна):</b> '+w1.map(function(x){return x.n;}).join(', ')+' — главные по марже, делать в полном объёме.</p>';
+ t+='<p><b>Срезать до реалистичного коридора:</b> '+(trim.length?trim.map(function(x){return x.n+' ('+fmt(x.plan)+'→'+fmt(x.rec)+')';}).join('; '):'нет')+'.</p>';
+ t+='<p><b>Новинки — запускать поэтапно:</b> '+novel.slice(0,5).map(function(x){return x.n+' (план '+fmt(x.plan)+' при факте янв–июнь '+fmt(x.f26)+')';}).join('; ')+'. Ставить малые партии и наращивать, когда подтвердятся продажи.</p>';
+ t+='<p><b>Рекомендуемый план H2:</b> ~'+fmt(recTot)+' шт вместо '+fmt(planTot)+' (срезка завышенных). Главный резерв — новинки: при поэтапном вводе от факта план сократится ещё заметнее.</p>';
+ document.getElementById('recNote').innerHTML=t;
+}
+
 function setMode(m){mode=m;document.getElementById('tU').classList.toggle('on',m==='u');document.getElementById('tM').classList.toggle('on',m==='m');kpi();verdict();draw();season();cats();tbl();}
-kpi();verdict();expert();draw();season();cats();real();contrib();tbl();
+kpi();verdict();expert();draw();season();cats();real();contrib();tbl();prioBar();capInit();launchPlan();
 </script></body></html>
