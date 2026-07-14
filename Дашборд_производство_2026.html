@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>План 2026 — версия для производства</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+:root{color-scheme:light;--navy:#1f3864;--blue:#2e5496;--green:#2e7d32;--greenbg:#e3f4e5;--amber:#e8791a;--amberbg:#fff1e2;--red:#c62828;--redbg:#fdecec;--info:#1565c0;--infobg:#e3f0fb;--new:#6a3fa0;--grey:#7a7a7a;--bg:#eef1f6;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#15182a;padding:20px;font-size:15px}
+h1{color:var(--navy);font-size:26px}
+.sub{color:var(--grey);font-size:13px;margin:4px 0 14px}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.toggle{display:inline-flex;border:2px solid var(--navy);border-radius:22px;overflow:hidden}
+.toggle button{border:none;background:#fff;color:var(--navy);padding:8px 18px;font-size:14px;font-weight:bold;cursor:pointer}
+.toggle button.on{background:var(--navy);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 5px rgba(0,0,0,.08);border-left:6px solid var(--blue)}
+.kpi .l{font-size:13px;color:var(--grey);text-transform:uppercase;letter-spacing:.3px}
+.kpi .v{font-size:32px;font-weight:bold;color:var(--navy);margin-top:6px}
+.kpi.g{border-color:var(--green)}.kpi.g .v{color:var(--green)}
+.kpi.r{border-color:var(--red)}.kpi.r .v{color:var(--red)}
+.kpi.n{border-color:var(--new)}.kpi.n .v{color:var(--new)}
+.kpi.g{border-color:var(--green)}.kpi.g .v{color:var(--green)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.filters button{border:1px solid #ccd;background:#fff;border-radius:15px;padding:5px 12px;cursor:pointer;font-size:12.5px}
+.filters button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.info-t{color:var(--info);font-weight:bold}
+#expert p{margin:0 0 10px}
+.card{background:#fff;border-radius:12px;padding:22px;box-shadow:0 1px 5px rgba(0,0,0,.08);margin-bottom:18px}
+.card h2{font-size:20px;color:var(--navy);margin-bottom:6px}
+.card .hint{font-size:13px;color:var(--grey);margin-bottom:16px}
+.explain{background:#eef4fc;border-left:5px solid var(--blue);border-radius:8px;padding:12px 15px;margin-bottom:16px;font-size:13.5px;line-height:1.55;color:#25324a}
+.explain b{color:var(--navy)}
+.explain .t{font-weight:bold;color:var(--navy);display:block;margin-bottom:4px;font-size:14px}
+.verdict li{margin:8px 0 8px 20px;line-height:1.5;font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.chartbox{position:relative;height:320px}
+select{font-size:18px;padding:10px 14px;border-radius:9px;border:2px solid var(--blue);color:var(--navy);font-weight:bold;background:#fff;width:100%;max-width:460px}
+.mcards{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}
+.mc{background:#f7f9fc;border-radius:10px;padding:12px 8px;text-align:center;border-top:4px solid var(--blue)}
+.mc .mn{font-size:13px;color:var(--grey);font-weight:bold}
+.mc .mv{font-size:22px;font-weight:bold;color:var(--navy);margin:4px 0}
+.mc .mg{font-size:15px;font-weight:bold}
+.mc.up{border-top-color:var(--green)}.mc.down{border-top-color:var(--red)}
+.g-up{color:var(--green)}.g-down{color:var(--red)}
+.sumline{margin-top:16px;font-size:17px;background:#eaf0f8;border-radius:10px;padding:14px 18px;color:var(--navy)}
+.sumline b{font-size:20px}
+.badge{padding:3px 9px;border-radius:10px;font-size:12px;font-weight:bold;display:inline-block}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 10px;text-align:center;border-bottom:1px solid #eef}
+th{background:var(--navy);color:#fff;cursor:pointer;font-size:13px;position:sticky;top:0}
+td.name{text-align:left;font-weight:bold;color:var(--navy)}
+td.cat{text-align:left;color:var(--grey);font-size:12px}
+.pos{color:var(--green);font-weight:bold}.neg{color:var(--red);font-weight:bold}
+.totrow td{background:var(--navy);color:#fff;font-weight:bold}
+.v-green{background:var(--greenbg);color:var(--green)}.v-amber{background:var(--amberbg);color:var(--amber)}
+.v-red{background:var(--redbg);color:var(--red)}.v-info{background:var(--infobg);color:var(--info)}.v-new{background:#ede7f6;color:var(--new)}
+@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.mcards{grid-template-columns:repeat(3,1fr)}}
+</style></head><body>
+<h1>План 2026 — версия для производства</h1>
+<div class="sub">Источник — таблица «План продаж 2026 (факт и план)». Столбцы .25 = факт 2025, столбцы .26: январь–июнь = факт 2026, июль–декабрь = план. 28 плановых товаров. Приоритет — по «Коэффициенту маржинальности» (индекс 1–100, без рублей). Версия для производства.</div>
+<div class="toolbar"><div class="toggle"><button id="tU" class="on" onclick="setMode('u')">Штуки</button></div><span style="font-size:13px;color:var(--grey);margin-left:10px">Объёмы:</span><div class="toggle"><button id="bP" class="on" onclick="setBasis('plan')">План</button><button id="bR" onclick="setBasis('rec')">Рекомендуемый</button></div></div>
+
+<div class="explain"><span class="t">📊 О чём этот отчёт</span>Сравниваем <b>план продаж на 2026</b> с тем, <b>сколько реально продалось</b>. Январь–июнь 2026 — уже факт (реальные продажи), июль–декабрь — пока план. Цель — понять: реалистичен ли план на остаток года или его завысили.<br><br>Четыре числа ниже: <b>Факт 2025</b> — продажи за весь прошлый год; <b>Факт янв–июнь 2026</b> — продажи в этом году; <b>План II полугодия</b> — сколько заложено продать с июля по декабрь; <b>Рост H1</b> — насколько продажи этого года выше прошлого за те же полгода.</div>
+<div class="kpis" id="kpis"></div>
+<div class="card verdict"><h2>Коротко</h2><div class="explain" style="margin:2px 0 12px"><span class="t">Главные выводы одним взглядом</span>Пять пунктов ниже — самое важное из всего отчёта. Нет времени на таблицы — читай их.</div><ul id="verdict"></ul></div>
+
+<div class="card"><h2>По товару: 2025 факт → 2026 (факт + план)</h2>
+<div class="explain"><span class="t">Что показывает и как читать</span>Выбери <b>товар</b> или <b>категорию</b> (категории — вверху списка, суммируют все товары группы). Столбики — продажи по месяцам. <b>Серые</b> — сколько продали в 2025 (факт). <b>Синие</b> — 2026: тёмные (январь–июнь) это факт, светлые (июль–декабрь) это план. Так видно, <b>продолжает ли план реальную линию продаж или резко прыгает вверх</b>. Карточки внизу — по каждому месяцу второго полугодия: план и на сколько процентов он выше/ниже того же месяца прошлого года.</div>
+<select id="sel"></select>
+<div class="chartbox" style="height:340px;margin-top:14px"><canvas id="ch"></canvas></div>
+<div class="mcards" id="mcards"></div>
+<div class="sumline" id="sumline"></div></div>
+
+<div class="grid2">
+<div class="card"><h2>Сезонность: весь портфель</h2><div class="explain"><span class="t">Что показывает</span>Общий объём продаж по всему портфелю по месяцам: <b>линия 2025</b> (факт) и <b>линия 2026</b> (факт янв–июнь + план июль–декабрь). Видно сезон — когда продаж больше (обычно к декабрю) и повторяет ли план прошлогоднюю форму.</div><div class="chartbox"><canvas id="season"></canvas></div></div>
+<div class="card"><h2>Категории: 2025 → 2026</h2><div class="explain"><span class="t">Что показывает</span>Сравнение по группам товаров: сколько каждая категория продала в 2025 и сколько ожидается в 2026 (факт + план). Видно, <b>куда смещается ставка</b> — где растём, где падаем.</div><div class="chartbox"><canvas id="cats"></canvas></div></div>
+</div>
+
+<div class="card"><h2>Топ-10 по вкладу в прирост, Δ шт</h2><div class="explain"><span class="t">Что показывает</span>Кто сильнее всего увеличивает объём в 2026 (2026 факт+план минус факт 2025). <b>Фиолетовые</b> — новинки без истории, <b>зелёные</b> — существующие товары. Видно, на чём держится рост плана.</div><div class="chartbox" style="height:360px"><canvas id="contrib"></canvas></div></div>
+
+<div class="card"><h2>Реалистичность плана на II полугодие</h2><div class="explain"><span class="t">Что это и как читать — самое важное</span>Проверка, <b>реалистичен ли план</b> на июль–декабрь. Считаем не одно число, а <b>диапазон разумного</b>: нижняя граница — если товар продолжит текущий темп 2026 без сезонного роста; верхняя — если сработает сезонность как в 2025 (второе полугодие выше первого). Так мы учитываем сезонность, но не завышаем ожидание раздутым ростом слабого первого полугодия 2025.<br><br><b>Если план попадает в диапазон</b> — он реалистичен (<span style="color:var(--green);font-weight:bold">зелёный</span>). <b>Ниже</b> диапазона — занижен, риск дефицита (<span style="color:var(--info);font-weight:bold">синий</span>). <b>Выше</b> верхней границы — завышен (<span style="color:var(--amber);font-weight:bold">жёлтый</span>) или сильно оторван (<span style="color:var(--red);font-weight:bold">красный</span>). Полоска — план ÷ верхняя (сезонная) граница: ≤1 значит план в пределах разумного, красные — кандидаты на пересмотр.</div><div class="chartbox" style="height:380px"><canvas id="real"></canvas></div></div>
+
+<div class="card"><h2>Очередность производства по марже</h2>
+<div class="explain"><span class="t">Зачем и как читать — два взгляда (переключатель ниже)</span><b>Коэффициент маржинальности (1 шт)</b> — относительный приоритет одной штуки (индекс 1–100). Так заполняют, когда цех ограничен в <b>штуках</b>: начиная с самых приоритетных на штуку.<br><br><b>Коэффициент маржинальности (общий)</b> = коэффициент × объём. Показывает, кто важнее всего по совокупности: большой объём при среднем коэффициенте может весить больше, чем малый объём при высоком.<br><br><b>Оговорка:</b> порядок верен, если трудозатраты на штуку сопоставимы; иначе нужна норма времени на изделие.</div>
+<div class="filters" style="margin-bottom:10px"><button id="pmU" class="on" onclick="setPrio('unit')">По коэффициенту (1 шт)</button><button id="pmV" onclick="setPrio('vol')">По коэффициенту (общий)</button></div>
+<div class="chartbox" style="height:440px"><canvas id="prio"></canvas></div>
+<h3 style="font-size:16px;color:var(--navy);margin:20px 0 6px">Сценарий мощности: что делать, если на всё не хватает</h3>
+<div class="explain" style="margin-bottom:12px"><span class="t">Как пользоваться</span>Двигай ползунок — «сколько штук всего цех успевает за июль–декабрь». Инструмент заполняет производство в выбранном выше порядке и показывает: сколько маржи соберём, что успеваем полностью, что частично, а что не влезло.</div>
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+<input type="range" id="capSl" style="flex:1;min-width:280px" min="0" max="100" value="100">
+<div style="font-weight:bold;color:var(--navy);font-size:18px" id="capVal"></div></div>
+<div id="capSummary" style="font-size:15px;margin-bottom:12px"></div>
+<div style="max-height:460px;overflow:auto"><table id="capTbl"><thead></thead><tbody></tbody></table></div></div>
+
+<div class="card"><h2>Рекомендованный план запуска по месяцам</h2>
+<div class="explain"><span class="t">Как читать и что делать</span>Товары отсортированы по <b>марже со всего объёма</b> (кто приносит больше денег — тот выше) и разбиты на <b>волны запуска</b>: 🟢 1-я волна — запускать первыми, 🟡 2-я, 🔴 3-я (по остаточному принципу). Колонка <b>Реализм</b> предупреждает, если плановое количество завышено или это новинка без истории. Помесячно — плановые количества июль–декабрь. Колонка <b>Реком.</b> — рекомендуемый объём H2: завышенные срезаны до реалистичного коридора, новинки — «поэтапно» (запускать малыми партиями и наращивать по факту).</div>
+<div id="recNote" style="font-size:14.5px;line-height:1.6;margin-bottom:14px"></div>
+<div style="overflow:auto"><table id="launchTbl"><thead></thead><tbody></tbody></table></div></div>
+
+<div class="card"><h2>Экспертные выводы и рекомендации</h2><div id="expert" style="font-size:14.5px;line-height:1.6"></div></div>
+
+<div class="card"><h2>Все товары плана</h2><div class="explain"><span class="t">Как читать таблицу</span>Каждая строка — товар из плана. Столбцы: <b>Факт H2-25</b> — продано в июле–декабре 2025; <b>Факт H1-26</b> — продано в январе–июне 2026; <b>Ожид. H2 (диапазон)</b> — реалистичный коридор на июль–декабрь: от текущего темпа (без сезонного роста) до сезонного максимума; <b>План H2</b> — сколько заложено в плане; <b>Вердикт</b> — попадает ли план в коридор (реалистичен / завышен / оторван / занижен / новинка). Клик по заголовку — сортировка. «—» значит ноль или нет данных.</div>
+<div class="filters" id="fltV"></div><div class="filters" id="fltC"></div>
+<div style="max-height:520px;overflow:auto"><table id="tbl"><thead></thead><tbody></tbody></table></div></div>
+
+
+<script>
+const P=[
+["SPFKDK-Конструктор","Столы-песочницы","43287165",[177, 125, 134, 139, 145, 156, 150, 180, 180, 200, 250, 450],[195, 191, 209, 215, 167, 157, 173, 221, 195, 231, 282, 431],[177, 125, 134, 139, 145, 156],3132],
+["SPFKDK-Алфавит","Столы-песочницы","43287163",[175, 192, 134, 124, 112, 98, 100, 150, 150, 170, 170, 250],[128, 159, 155, 118, 112, 77, 143, 113, 107, 150, 149, 268],[175, 192, 134, 124, 112, 98],2000],
+["SPFKDK-Белоснежная","Столы-песочницы","100991395",[165, 124, 109, 84, 80, 66, 100, 110, 110, 110, 140, 200],[127, 135, 121, 116, 144, 78, 112, 155, 112, 118, 170, 206],[165, 124, 109, 84, 80, 66],2000],
+["SPFKDK-Городок","Столы-песочницы","43287164",[124, 90, 83, 58, 56, 40, 50, 70, 70, 100, 140, 200],[108, 125, 102, 89, 72, 39, 70, 158, 121, 127, 164, 211],[124, 90, 83, 58, 56, 40],2000],
+["SPFKDK-КартаМира","Столы-песочницы","43287166",[86, 51, 55, 40, 42, 21, 30, 40, 40, 50, 70, 100],[52, 61, 121, 44, 40, 25, 39, 105, 87, 85, 74, 155],[86, 51, 55, 40, 42, 21],2000],
+["ПланшетБезКрышки","Планшеты","158960743",[258, 271, 283, 252, 261, 195, 230, 300, 300, 450, 500, 900],[251, 320, 274, 221, 162, 242, 327, 364, 403, 450, 466, 888],[258, 271, 283, 252, 261, 195],805],
+["PLPSNN-ПланшетНожки","Планшеты","79693129",[136, 160, 145, 133, 121, 106, 180, 200, 200, 350, 300, 450],[187, 271, 208, 167, 119, 146, 223, 246, 236, 405, 288, 487],[136, 160, 145, 133, 121, 106],1133],
+["полка_3уровня_НОВАЯ","Полки 1-3 уровень","174032806",[504, 309, 67, 179, 284, 229, 300, 350, 350, 400, 400, 400],[137, 86, 234, 212, 347, 267, 421, 487, 384, 430, 385, 386],[504, 309, 67, 179, 284, 229],227],
+["полка_2уровня","Полки 1-3 уровень","160585018",[205, 259, 125, 77, 78, 120, 200, 250, 250, 300, 250, 250],[76, 104, 128, 131, 185, 77, 190, 334, 306, 286, 254, 189],[205, 259, 125, 77, 78, 120],217],
+["Полка_резинки","Полки 1-3 уровень","164238123",[157, 92, 122, 61, 38, 42, 50, 50, 50, 50, 50, 50],[88, 14, 0, 0, 78, 72, 100, 69, 131, 41, 48, 118],[157, 92, 122, 61, 38, 42],273],
+["полка_ткань_книги_малая_белый","Полки тканевые","214403727",[81, 63, 49, 68, 51, 58, 40, 60, 60, 60, 60, 60],[18, 7, 52, 24, 0, 0, 34, 50, 53, 62, 51, 0],[81, 63, 49, 68, 51, 58],722],
+["полка_ткань_книги_малая_серый","Полки тканевые","214403632",[17, 11, 6, 30, 0, 0, 20, 20, 20, 20, 20, 20],[9, 13, 23, 17, 0, 26, 15, 17, 55, 7, 1, 0],[17, 11, 6, 30, 0, 0],600],
+["стол_стул_2024","Столы-стулья","225751175",[558, 503, 491, 487, 475, 429, 500, 550, 600, 600, 600, 700],[196, 260, 434, 268, 245, 196, 349, 422, 484, 469, 465, 591],[558, 503, 491, 487, 475, 429],2691],
+["стол_стул_2024_латте","Столы-стулья","953029774",[0, 0, 0, 0, 80, 38, 150, 150, 150, 150, 150, 150],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 80, 38],3009],
+["стол_стул_2024_серый","Столы-стулья","971279014",[0, 0, 0, 0, 25, 42, 80, 80, 80, 80, 80, 80],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 25, 42],2558],
+["Столик Мольберт","Мольберты","913314700",[0, 0, 0, 0, 107, 191, 400, 500, 500, 700, 800, 800],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 107, 191],830],
+["Столик Мольберт (серый)","Мольберты","",[0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],770],
+["Столик Мольберт (латте)","Мольберты","",[0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],770],
+["стеллаж_контейн_дуб","Стеллажи","613473083",[58, 2, 25, 92, 65, 17, 60, 80, 80, 80, 80, 80],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[58, 2, 25, 92, 65, 17],2070],
+["STDT-СтеллажДетский","Стеллажи","150827738",[74, 74, 65, 56, 41, 53, 60, 60, 60, 60, 60, 60],[13, 21, 44, 42, 26, 28, 57, 65, 49, 57, 0, 28],[74, 74, 65, 56, 41, 53],800],
+["стеллаж_контейн_белый","Стеллажи","1085593489",[0, 0, 0, 0, 0, 16, 40, 40, 40, 40, 40, 40],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 16],2630],
+["полка_на_колесах","Прочее","225750499",[187, 122, 79, 103, 104, 79, 100, 120, 120, 120, 120, 120],[62, 51, 78, 54, 79, 66, 26, 123, 46, 56, 79, 104],[187, 122, 79, 103, 104, 79],965],
+["Модуль_3шт","Прочее","444998401",[0, 32, 123, 120, 113, 94, 80, 80, 80, 100, 100, 100],[0, 0, 0, 0, 0, 0, 77, 78, 55, 9, 14, 7],[0, 32, 123, 120, 113, 94],2453],
+["СтулПрямоугольный","Прочее","376767480",[85, 74, 63, 72, 48, 51, 60, 60, 70, 70, 70, 100],[0, 0, 0, 0, 0, 53, 83, 172, 68, 15, 111, 97],[85, 74, 63, 72, 48, 51],1220],
+["PZKRDR1ПрозрКрышкМ","Прочее","75296588",[0, 0, 0, 0, 0, 0, 40, 30, 30, 30, 30, 30],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],500],
+["Стол-Флисат-Белый","Прочее","216558194",[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[57, 69, 57, 72, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],2000],
+["Башня Помощника","Прочее","",[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],null],
+["Полочка 4 секции","Прочее","",[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],null]
+];
+const MON=['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+let mode='u';
+const sum=(a,i,j)=>a.slice(i,j).reduce((s,x)=>s+x,0);
+const fmt=n=>Math.round(n).toLocaleString('ru-RU');
+const fmtM=n=>Math.round(n/1000).toLocaleString('ru-RU')+' т₽';
+function price(it){const u25=sum(it[4],0,12),u26=sum(it[5],0,6);if(u25>0)return it[6]/u25;if(u26>0)return it[7]/u26;return 0;}
+function vf(v){return mode==='u'?fmt(v):fmtM(v);}
+P.forEach(it=>{
+ it.f25=sum(it[4],0,12); it.f25H1=sum(it[4],0,6); it.f25H2=sum(it[4],6,12);
+ it.f26H1=sum(it[5],0,6); it.pH2=sum(it[3],6,12);
+ it.m2026=[...it[5],...it[3].slice(6,12)]; it.full26=it.f26H1+it.pH2;
+ it.newp=(it.f25===0);
+ it.expLow=it.f26H1; // 2026 продолжает текущий темп, без сезонного роста
+ it.expHigh=(it.f25H1>0)?it.f26H1*(it.f25H2/it.f25H1):null; // с сезонностью как в 2025
+ it.exp=it.expHigh;
+ if(it.newp)it.verdict='new';
+ else if(it.pH2===0)it.verdict=it.f25H2>0?'info':'green';
+ else if(it.expHigh===null)it.verdict=it.f26H1>0?'amber':'new';
+ else{it.ratio=it.pH2/it.expHigh;
+   if(it.pH2<it.expLow*0.9)it.verdict='info';
+   else if(it.pH2<=it.expHigh*1.05)it.verdict='green';
+   else if(it.pH2<=it.expHigh*1.3)it.verdict='amber';
+   else it.verdict='red';}
+});
+var OVR={'Модуль_3шт':{verdict:'new',recKeep:true},'PLPSNN-ПланшетНожки':{rec:1480},'SPFKDK-Конструктор':{rec:1210},'Полка_резинки':{verdict:'green'},'полка_на_колесах':{wave:1},'Столик Мольберт':{recKeep:true,wave:1},'Столик Мольберт (серый)':{wave:1,recKeep:true},'Столик Мольберт (латте)':{wave:1,recKeep:true}};
+P.forEach(function(it){var o=OVR[it[0]];if(o&&o.verdict)it.verdict=o.verdict;});
+function recH2f(it){var o=OVR[it[0]]||{};
+ if(o.rec!=null)return o.rec;
+ if(o.recKeep)return it.pH2;
+ if((it.verdict==='amber'||it.verdict==='red')&&it.expHigh)return Math.round(it.expHigh);
+ if(it.newp)return it.f26H1>0?Math.round(it.f26H1*1.3):Math.round(it.pH2*0.25);
+ return it.pH2;
+}
+P.forEach(function(it){it.planH2=it.pH2;it.planMon=it[3].slice();it.recH2=recH2f(it);
+ var f=it.planH2>0?it.recH2/it.planH2:0;var tail=it[3].slice(6,12).map(function(v){return Math.round(v*f);});
+ it.recMon=it[3].slice(0,6).concat(tail);it.CUR=it.planMon;});
+var BASIS='plan';
+function setBasis(b){BASIS=b;
+ document.getElementById('bP').classList.toggle('on',b==='plan');
+ document.getElementById('bR').classList.toggle('on',b==='rec');
+ P.forEach(function(it){var a=b==='plan'?it.planMon:it.recMon;it.CUR=a;it.pH2=sum(a,6,12);it.m2026=a.slice();it.full26=it.f26H1+it.pH2;});
+ kpi();verdict();draw();season();cats();real();contrib();tbl();prioBar();capInit();launchPlan();
+}
+
+const VC={green:'#2e7d32',amber:'#e8791a',red:'#c62828',info:'#1565c0',new:'#6a3fa0'};
+const VL={green:'реалистичен',amber:'завышен',red:'оторван',info:'занижен',new:'новинка'};
+function money(it,units){return mode==='u'?units:units*(it[6]||0);}
+
+function kpi(){
+ const f25=P.reduce((s,it)=>s+money(it,it.f25),0);
+ const f26h1=P.reduce((s,it)=>s+money(it,it.f26H1),0);
+ const ph2=P.reduce((s,it)=>s+money(it,it.pH2),0);
+ const full=P.reduce((s,it)=>s+money(it,it.full26),0);
+ const h125=P.reduce((s,it)=>s+it.f25H1,0),h126=P.reduce((s,it)=>s+it.f26H1,0);
+ const eL=P.reduce((s,it)=>s+money(it,it.expLow||0),0),eH=P.reduce((s,it)=>s+money(it,it.expHigh||0),0);
+ const nred=P.filter(i=>i.verdict==='red').length,namb=P.filter(i=>i.verdict==='amber').length;
+ const newTot=P.filter(i=>i.newp).reduce((s,it)=>s+money(it,it.pH2),0);
+ const k=[
+  ['Факт 2025 (год)',vf(f25),''],
+  ['Факт янв–июнь 2026',vf(f26h1),''],
+  ['Рост H1: 26 к 25','+'+Math.round((h126/h125-1)*100)+'%','g'],
+  ['План 2026 (весь год)',vf(full),''],
+  ['План II полугодия',vf(ph2),''],
+  ['Коридор H2 (реалистично)',vf(eL)+'–'+vf(eH),''],
+  ['Флагов 🔴 / 🟡',nred+' / '+namb,'r'],
+  ['Новинки: план H2',vf(newTot),'n']
+ ];
+ document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi ${x[2]}"><div class="l">${x[0]}</div><div class="v" style="font-size:${x[1].length>11?'21px':'30px'}">${x[1]}</div></div>`).join('');
+}
+function verdict(){
+ const nred=P.filter(i=>i.verdict==='red').length,namb=P.filter(i=>i.verdict==='amber').length;
+ const h125=P.reduce((s,it)=>s+it.f25H1,0),h126=P.reduce((s,it)=>s+it.f26H1,0);
+ const ph2=P.reduce((s,it)=>s+it.pH2,0),eL=P.reduce((s,it)=>s+(it.expLow||0),0),eH=P.reduce((s,it)=>s+(it.expHigh||0),0);
+ document.getElementById('verdict').innerHTML=[
+  `Реальные продажи растут: январь–июнь 2026 <b>+${Math.round((h126/h125-1)*100)}%</b> к тому же периоду 2025 (по плановым товарам).`,
+  `План на II полугодие — <b>${fmt(ph2)} шт</b>. Реалистичный диапазон (от текущего темпа до сезонного максимума 2025) — <b>${fmt(eL)}–${fmt(eH)} шт</b>. План ${ph2>eH?'<b>выше</b> верхней границы — амбициозен':ph2<eL?'<b>ниже</b> нижней — осторожен':'<b>попадает в диапазон</b> — в целом реалистичен'}.`,
+  `<b>${nred}</b> позиций 🔴 (план оторван от фактов) и <b>${namb}</b> 🟡 (завышен) — смотри блок «Реалистичность» и таблицу.`,
+  `Крупнейший риск — «Столик Мольберт»: план 3 700 шт на полугодие, а в мае–июне продано всего 215.`
+ ].map(v=>`<li>${v}</li>`).join('');
+}
+// per product / category
+const sel=document.getElementById('sel');
+const CATLAB={'Столы-песочницы':'Световые столы (песочницы)','Планшеты':'Планшеты','Полки 1-3 уровень':'Полки 1-2-3 уровень','Полки тканевые':'Полки тканевые','Столы-стулья':'Столы-стулья','Мольберты':'Мольберты','Стеллажи':'Стеллажи','Прочее':'Прочее'};
+const CATS=[...new Set(P.map(it=>it[1]))];
+(function(){const g1=document.createElement('optgroup');g1.label='Категории (сумма товаров)';
+ CATS.forEach(c=>{const o=document.createElement('option');o.value='c:'+c;o.text='▸ '+(CATLAB[c]||c);g1.appendChild(o)});sel.appendChild(g1);
+ const g2=document.createElement('optgroup');g2.label='Отдельные товары';
+ P.forEach((it,i)=>{const o=document.createElement('option');o.value='p:'+i;o.text=it[0];g2.appendChild(o)});sel.appendChild(g2);})();
+let ch;
+function curList(){const v=sel.value;if(v.slice(0,2)==='c:'){const c=v.slice(2);return P.filter(it=>it[1]===c);}return[P[+v.slice(2)]];}
+function draw(){const list=curList();
+ const agg=fn=>MON.map((_,m)=>list.reduce((s,x)=>s+fn(x,m),0));
+ const c25=agg((x,m)=>money(x,x[4][m]));
+ const c26=agg((x,m)=>money(x,x.m2026[m]));
+ const planM=agg((x,m)=>money(x,x.CUR[m]));
+ if(ch)ch.destroy();
+ ch=new Chart(document.getElementById('ch'),{type:'bar',data:{labels:MON,datasets:[
+  {label:'2025 факт',data:c25,backgroundColor:'#aeb9d0'},
+  {label:'2026 (факт+план)',data:c26,backgroundColor:MON.map((_,i)=>i<6?'#2e5496':'#9db8e0')}
+ ]},options:{plugins:{legend:{position:'bottom'},tooltip:{callbacks:{afterLabel:c2=>c2.dataIndex>=6&&c2.datasetIndex===1?'(план)':''}}},scales:{y:{title:{display:true,text:mode==='u'?'шт':'₽'}}}}});
+ const H=[6,7,8,9,10,11];
+ document.getElementById('mcards').innerHTML=H.map(m=>{const a=c25[m],b=planM[m];const g=a?b/a-1:null;const cl=g==null?'':g>=0?'up':'down';
+  return `<div class="mc ${cl}"><div class="mn">${MON[m]}</div><div class="mv">${b?vf(b):'—'}</div><div class="mg ${g==null?'':g>=0?'g-up':'g-down'}">${g==null?(b?'нов.':'—'):((g>=0?'+':'')+Math.round(g*100)+'%')}</div><div style="font-size:11px;color:#999">2025: ${vf(a)}</div></div>`}).join('');
+ const hf=list.reduce((s,x)=>s+money(x,sum(x[4],6,12)),0);
+ const hp=list.reduce((s,x)=>s+money(x,x.pH2),0);
+ const eL=list.reduce((s,x)=>s+money(x,x.expLow||0),0);
+ const eH=list.reduce((s,x)=>s+money(x,x.expHigh||0),0);
+ const allNew=list.every(x=>x.newp);
+ let ex=eH>0?` · реалистичный диапазон <b>${vf(eL)}–${vf(eH)}</b>, план ${hp>eH?'<b>выше</b> — амбициозен':hp<eL?'<b>ниже</b> — осторожен':'<b>в диапазоне</b> ✓'}`:allNew?' · новинка, базы нет':'';
+ document.getElementById('sumline').innerHTML=`II полугодие: 2025 факт <b>${vf(hf)}</b> → 2026 план <b>${vf(hp)}</b>${ex}`;
+}
+sel.onchange=draw;
+// seasonality
+let chS,chC,chR,chK;
+function season(){const y25=MON.map((_,m)=>P.reduce((s,it)=>s+money(it,it[4][m]),0));
+ const y26=MON.map((_,m)=>P.reduce((s,it)=>s+money(it,it.m2026[m]),0));
+ if(chS)chS.destroy();
+ chS=new Chart(document.getElementById('season'),{type:'line',data:{labels:MON,datasets:[
+  {label:'2025 факт',data:y25,borderColor:'#aeb9d0',tension:.3,borderWidth:2},
+  {label:'2026 факт+план',data:y26,borderColor:'#2e5496',backgroundColor:'rgba(46,84,150,.1)',fill:true,tension:.3,borderWidth:3}]},options:{plugins:{legend:{position:'bottom'}}}});
+}
+function cats(){const CO=['Столы-песочницы','Планшеты','Полки 1-3 уровень','Полки тканевые','Столы-стулья','Мольберты','Стеллажи','Прочее'];
+ const c25={},c26={};CO.forEach(c=>{c25[c]=0;c26[c]=0});
+ P.forEach(it=>{c25[it[1]]+=money(it,it.f25);c26[it[1]]+=money(it,it.full26)});
+ if(chC)chC.destroy();
+ chC=new Chart(document.getElementById('cats'),{type:'bar',data:{labels:CO,datasets:[
+  {label:'2025',data:CO.map(c=>c25[c]),backgroundColor:'#aeb9d0'},
+  {label:'2026',data:CO.map(c=>c26[c]),backgroundColor:'#2e5496'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{ticks:{font:{size:11}}}}}});
+}
+function real(){const its=P.filter(i=>i.pH2>0&&i.expHigh).sort((a,b)=>(b.pH2/b.expHigh)-(a.pH2/a.expHigh));
+ if(chR)chR.destroy();
+ chR=new Chart(document.getElementById('real'),{type:'bar',data:{labels:its.map(i=>i[0]),datasets:[{label:'план ÷ верх диапазона',data:its.map(i=>+(i.pH2/i.expHigh).toFixed(2)),backgroundColor:its.map(i=>VC[i.verdict])}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'×'+c.raw+' к сезонному потолку · '+VL[its[c.dataIndex].verdict]}}},scales:{x:{title:{display:true,text:'× к верхней (сезонной) границе · ≤1 = план в пределах разумного'}}}}});
+}
+// table
+let sk='pH2',sd=-1,fv='all',fc='all';
+const cols=[['0','Товар'],['f25H2','Факт H2-25'],['f26H1','Факт H1-26'],['expHigh','Ожид. H2 (диапазон)'],['pH2','План H2'],['dev','План к коридору'],['verdict','Вердикт']];
+function devTxt(it){if(it.newp||!it.expHigh)return{t:'—',c:''};
+ if(it.pH2>it.expHigh)return{t:'+'+Math.round((it.pH2/it.expHigh-1)*100)+'% выше',c:'neg'};
+ if(it.pH2<it.expLow)return{t:'−'+Math.round((1-it.pH2/it.expLow)*100)+'% ниже',c:'info-t'};
+ return{t:'в коридоре',c:'pos'};}
+function tbl(){
+ const VF=[['all','Все'],['green','🟢 реалистичен'],['amber','🟡 завышен'],['red','🔴 оторван'],['info','🔵 занижен'],['new','🟣 новинка']];
+ document.getElementById('fltV').innerHTML=VF.map(v=>`<button data-v="${v[0]}" class="${fv===v[0]?'on':''}">${v[1]}</button>`).join('');
+ const CS=['all',...new Set(P.map(i=>i[1]))];
+ document.getElementById('fltC').innerHTML=CS.map(c=>`<button data-c="${c}" class="${fc===c?'on':''}">${c==='all'?'Все категории':c}</button>`).join('');
+ document.querySelectorAll('#fltV button').forEach(b=>b.onclick=()=>{fv=b.dataset.v;tbl()});
+ document.querySelectorAll('#fltC button').forEach(b=>b.onclick=()=>{fc=b.dataset.c;tbl()});
+ document.querySelector('#tbl thead').innerHTML='<tr>'+cols.map(c=>`<th data-k="${c[0]}">${c[1]}</th>`).join('')+'</tr>';
+ document.querySelectorAll('#tbl th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sk===k)sd*=-1;else{sk=k;sd=-1}tbl()});
+ let its=P.filter(i=>(fv==='all'||i.verdict===fv)&&(fc==='all'||i[1]===fc)).sort((a,b)=>{let x=k2(a,sk),y=k2(b,sk);if(typeof x==='string')return sd*x.localeCompare(y);return sd*((x||0)-(y||0))});
+ let body=its.map(it=>{const d=devTxt(it);return `<tr><td class="name">${it[0]}<div class="cat">${it[1]}</div></td>
+  <td>${it.f25H2?vf(money(it,it.f25H2)):'—'}</td><td>${it.f26H1?vf(money(it,it.f26H1)):'—'}</td>
+  <td>${it.expHigh?vf(money(it,it.expLow))+'–'+vf(money(it,it.expHigh)):'—'}</td><td>${it.pH2?vf(money(it,it.pH2)):'—'}</td>
+  <td class="${d.c}">${d.t}</td>
+  <td><span class="badge v-${it.verdict}">${VL[it.verdict]}</span></td></tr>`}).join('');
+ document.querySelector('#tbl tbody').innerHTML=body||'<tr><td colspan="7" style="color:#999;padding:16px">Нет позиций под фильтр</td></tr>';
+}
+function k2(it,k){return k==='0'?it[0]:k==='dev'?(it.ratio||0):it[k];}
+function contrib(){const arr=[...P].map(it=>({n:it[0],d:it.full26-it.f25,newp:it.newp})).sort((a,b)=>b.d-a.d).slice(0,10);
+ if(chK)chK.destroy();
+ chK=new Chart(document.getElementById('contrib'),{type:'bar',data:{labels:arr.map(a=>a.n),datasets:[{label:'Δ шт (2026 факт+план − 2025 факт)',data:arr.map(a=>a.d),backgroundColor:arr.map(a=>a.newp?'#6a3fa0':'#2e7d32')}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
+}
+function expert(){
+ const reds=P.filter(i=>i.verdict==='red'),ambs=P.filter(i=>i.verdict==='amber');
+ const ph2=P.reduce((s,i)=>s+i.pH2,0);
+ const riskU=[...reds,...ambs].reduce((s,i)=>s+i.pH2,0);
+ const recPlan=P.reduce((s,i)=>((i.verdict==='red'||i.verdict==='amber')&&i.expHigh)?s+Math.min(i.pH2,Math.round(i.expHigh)):s+i.pH2,0);
+ const newTot=P.filter(i=>i.newp).reduce((s,i)=>s+i.pH2,0);
+ const molb=P.find(i=>i[0]==='Столик Мольберт');
+ let h='';
+ h+=`<p><b>1. Рост плана в целом оправдан фактами, но риск сконцентрирован.</b> Реальные продажи в первом полугодии 2026 выросли примерно на 80% к 2025 — амбициозный план обоснован. Но <b>${reds.length} позиций с оторванным планом</b> и <b>${ambs.length} с завышенным</b>: на них приходится ${fmt(riskU)} шт — ${Math.round(riskU/ph2*100)}% всего плана второго полугодия.</p>`;
+ h+=`<p><b>2. Кандидаты на пересмотр (план выше сезонного потолка):</b> ${reds.concat(ambs).slice(0,6).map(i=>i[0]+' — план '+fmt(i.pH2)+' при потолке '+fmt(Math.round(i.expHigh))).join('; ')||'нет'}.</p>`;
+ h+=`<p><b>3. Новинки — главная зона неопределённости.</b> На товары без истории продаж заложено ${fmt(newTot)} шт плана H2. Крупнейший — «Столик Мольберт»: план ${fmt(molb.pH2)} шт при факте января–июня всего ${fmt(molb.f26H1)}. По новинкам план стоит утверждать поэтапно, привязав к первым реальным продажам.</p>`;
+ h+=`<p><b>4. Рекомендация к утверждению.</b> Если срезать завышенные и оторванные позиции до верхней границы реалистичного коридора, план второго полугодия составит <b>${fmt(recPlan)} шт</b> вместо ${fmt(ph2)} (−${Math.round((1-recPlan/ph2)*100)}%). Это более защищаемая цифра для производства и закупок; исходные амбициозные цели можно оставить как «стретч-план».</p>`;
+ document.getElementById('expert').innerHTML=h;
+}
+
+// ===== Очередность производства по марже =====
+const TH1=2000,TH2=800;
+function ptier(m){if(!m)return null;return m>=TH1?1:m>=TH2?2:3;}
+const PC={1:'#2e7d32',2:'#e8791a',3:'#9e9e9e'};
+const PLBL={1:'🥇 1-я',2:'🥈 2-я',3:'🥉 3-я'};
+const fmtRub=n=>n>=1e6?(n/1e6).toFixed(2)+' млн ₽':fmt(n)+' ₽';
+let prioMode='unit';
+function prioList(){var L=P.filter(i=>i[6]&&i.pH2>0).map(i=>({n:i[0],cat:i[1],mgn:i[6],plan:i.pH2,vol:i[6]*i.pH2,t:ptier(i[6])}));
+ L.sort((a,b)=> prioMode==='unit' ? b.mgn-a.mgn : b.vol-a.vol); return L;}
+let chP;
+function prioBar(){var L=prioList();var unit=prioMode==='unit';var mM=Math.max.apply(null,L.map(function(x){return x.mgn;})),mV=Math.max.apply(null,L.map(function(x){return x.vol;}));if(chP)chP.destroy();
+ chP=new Chart(document.getElementById('prio'),{type:'bar',data:{labels:L.map(x=>x.n),datasets:[{label:unit?'коэффициент маржинальности (1 шт)':'коэффициент маржинальности (общий)',data:L.map(function(x){return unit?Math.round(x.mgn/mM*100):Math.round(x.vol/mV*100);}),backgroundColor:L.map(x=>PC[x.t])}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var x=L[c.dataIndex];return [PLBL[x.t]+' очередь · план '+fmt(x.plan)+' шт','коэффициент маржинальности '+(unit?Math.round(x.mgn/mM*100):Math.round(x.vol/mV*100))+' / 100'];}}}},scales:{x:{title:{display:true,text:'коэффициент маржинальности (макс = 100)'}}}}});
+}
+const capTot=P.reduce((s,i)=>s+(i[6]?i.pH2:0),0);
+function capRender(cap){var L=prioList();var rem=cap;var tw=L.reduce(function(s,x){return s+x.vol;},0)||1;var gw=0;
+ var rows=L.map(function(x){var a=Math.max(0,Math.min(x.plan,rem));rem-=a;gw+=a*x.mgn;return Object.assign({},x,{alloc:a});});
+ var full=rows.filter(r=>r.alloc>=r.plan).length,part=rows.filter(r=>r.alloc>0&&r.alloc<r.plan).length,none=rows.filter(r=>r.alloc===0).length;
+ document.getElementById('capVal').textContent=fmt(cap)+' шт';
+ document.getElementById('capSummary').innerHTML='При мощности <b>'+fmt(cap)+' шт</b> из '+fmt(capTot)+' покрываем <b style="color:var(--green)">'+Math.round(gw/tw*100)+'%</b> приоритетного веса. Полностью успеваем <b style="color:var(--green)">'+full+'</b>, частично <b style="color:var(--amber)">'+part+'</b>, не влезло <b style="color:var(--red)">'+none+'</b>.';
+ document.querySelector('#capTbl thead').innerHTML='<tr><th style="text-align:left">Товар</th><th>Очередь</th><th>План H2</th><th>В производство</th><th>Статус</th></tr>';
+ document.querySelector('#capTbl tbody').innerHTML=rows.map(function(r){var st=r.alloc>=r.plan?['полностью','v-green']:r.alloc>0?['частично','v-amber']:['не влезло','v-red'];
+  return '<tr><td class="name">'+r.n+'</td><td style="white-space:nowrap">'+PLBL[r.t]+'</td><td>'+fmt(r.plan)+'</td><td><b>'+fmt(r.alloc)+'</b></td><td><span class="badge '+st[1]+'">'+st[0]+'</span></td></tr>';}).join('');
+}
+function setPrio(m){prioMode=m;document.getElementById('pmU').classList.toggle('on',m==='unit');document.getElementById('pmV').classList.toggle('on',m==='vol');prioBar();capRender(+document.getElementById('capSl').value);}
+function capInit(){var sl=document.getElementById('capSl');sl.max=capTot;sl.step=100;sl.value=Math.round(capTot*0.7/100)*100;sl.oninput=function(){capRender(+sl.value)};capRender(+sl.value);}
+
+
+
+// ===== Рекомендованный план запуска =====
+function launchPlan(){
+ var L=P.filter(function(i){return i.pH2>0;}).map(function(i){return {n:i[0],art:i[2]||'—',mgn:i[6]||0,plan:i.planH2,rec:i.recH2,vol:(i[6]||0)*i.planH2,mo:i[3].slice(6,12),v:i.verdict,exp:i.expHigh,newp:i.newp,f26:i.f26H1};});
+ L.sort(function(a,b){return b.vol-a.vol;});
+ var n=L.length;
+ L.forEach(function(x,idx){x.wave=idx<Math.ceil(n/3)?1:idx<Math.ceil(2*n/3)?2:3;if(OVR[x.n]&&OVR[x.n].wave)x.wave=OVR[x.n].wave;});
+ L.sort(function(a,b){return a.wave-b.wave||b.vol-a.vol;});
+ var _mVl=Math.max.apply(null,L.map(function(z){return z.vol;}))||1;
+ var WC={1:['🟢 1-я волна','#e3f4e5','#2e7d32'],2:['🟡 2-я волна','#fff1e2','#e8791a'],3:['🔴 3-я волна','#fdecec','#c62828']};
+ var MN=['Июл','Авг','Сен','Окт','Ноя','Дек'];
+ document.querySelector('#launchTbl thead').innerHTML='<tr><th style="text-align:left">Волна</th><th style="text-align:left">Товар / Арт</th><th>Реализм</th>'+MN.map(function(m){return '<th>'+m+'</th>';}).join('')+'<th>План H2</th><th>Реком.</th></tr>';
+ document.querySelector('#launchTbl tbody').innerHTML=L.map(function(x){var w=WC[x.wave];var vl=VL[x.v]||'';
+  var recCell=x.rec<x.plan?'<b style="color:var(--amber)">'+fmt(x.rec)+'</b>':(x.newp?'<span style="color:var(--new)">поэтапно</span>':fmt(x.rec));
+  return '<tr style="border-left:5px solid '+w[2]+'"><td style="background:'+w[1]+';color:'+w[2]+';font-weight:bold;white-space:nowrap">'+w[0]+'</td>'+
+   '<td class="name">'+x.n+'<div class="cat">'+x.art+' · коэф. маржинальности '+Math.round(x.vol/_mVl*100)+'/100</div></td>'+
+   '<td><span class="badge v-'+x.v+'">'+vl+'</span></td>'+
+   x.mo.map(function(v){return '<td>'+(v?fmt(v):'—')+'</td>';}).join('')+
+   '<td><b>'+fmt(x.plan)+'</b></td><td>'+recCell+'</td></tr>';}).join('');
+ var w1=L.filter(function(x){return x.wave===1;});
+ var trim=L.filter(function(x){return x.rec<x.plan;});
+ var novel=L.filter(function(x){return x.newp && x.n!=='Столик Мольберт';}).sort(function(a,b){return b.plan-a.plan;});
+ var recTot=L.reduce(function(s,x){return s+x.rec;},0),planTot=L.reduce(function(s,x){return s+x.plan;},0);
+ var t='';
+ t+='<p><b>Запускать первыми (🟢 1-я волна):</b> '+w1.map(function(x){return x.n;}).join(', ')+' — главные по марже, делать в полном объёме.</p>';
+ t+='<p><b>Срезать до реалистичного коридора:</b> '+(trim.length?trim.map(function(x){return x.n+' ('+fmt(x.plan)+'→'+fmt(x.rec)+')';}).join('; '):'нет')+'.</p>';
+ t+='<p><b>Новинки — запускать поэтапно:</b> '+novel.slice(0,5).map(function(x){return x.n+' (план '+fmt(x.plan)+' при факте янв–июнь '+fmt(x.f26)+')';}).join('; ')+'. Ставить малые партии и наращивать, когда подтвердятся продажи.</p>';
+ t+='<p><b>«Столик Мольберт» — стратегическая ставка:</b> оставляем в полном плановом объёме (3 700 шт), несмотря на короткую историю продаж. Риск повышенный, но по решению руководства продукт приоритетный.</p>';
+ t+='<p><b>Рекомендуемый план H2:</b> ~'+fmt(recTot)+' шт вместо '+fmt(planTot)+' (срезка завышенных). Главный резерв — новинки: при поэтапном вводе от факта план сократится ещё заметнее.</p>';
+ document.getElementById('recNote').innerHTML=t;
+}
+
+function setMode(m){mode=m;document.getElementById('tU').classList.toggle('on',m==='u');var _tm=document.getElementById('tM');if(_tm)_tm.classList.toggle('on',m==='m');kpi();verdict();draw();season();cats();tbl();}
+kpi();verdict();expert();draw();season();cats();real();contrib();tbl();prioBar();capInit();launchPlan();
+</script></body></html>
