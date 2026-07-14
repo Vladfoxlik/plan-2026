@@ -161,6 +161,7 @@ P.forEach(it=>{
    else it.verdict='red';}
 });
 function recH2f(it){
+ if(it[0]==='Столик Мольберт')return it.pH2;
  if((it.verdict==='amber'||it.verdict==='red')&&it.expHigh)return Math.round(it.expHigh);
  if(it.newp)return it.f26H1>0?Math.round(it.f26H1*1.3):Math.round(it.pH2*0.25);
  return it.pH2;
@@ -355,12 +356,13 @@ function launchPlan(){
    '<td><b>'+fmt(x.plan)+'</b></td><td>'+recCell+'</td></tr>';}).join('');
  var w1=L.filter(function(x){return x.wave===1;});
  var trim=L.filter(function(x){return x.rec<x.plan;});
- var novel=L.filter(function(x){return x.newp;}).sort(function(a,b){return b.plan-a.plan;});
+ var novel=L.filter(function(x){return x.newp && x.n!=='Столик Мольберт';}).sort(function(a,b){return b.plan-a.plan;});
  var recTot=L.reduce(function(s,x){return s+x.rec;},0),planTot=L.reduce(function(s,x){return s+x.plan;},0);
  var t='';
  t+='<p><b>Запускать первыми (🟢 1-я волна):</b> '+w1.map(function(x){return x.n;}).join(', ')+' — главные по марже, делать в полном объёме.</p>';
  t+='<p><b>Срезать до реалистичного коридора:</b> '+(trim.length?trim.map(function(x){return x.n+' ('+fmt(x.plan)+'→'+fmt(x.rec)+')';}).join('; '):'нет')+'.</p>';
  t+='<p><b>Новинки — запускать поэтапно:</b> '+novel.slice(0,5).map(function(x){return x.n+' (план '+fmt(x.plan)+' при факте янв–июнь '+fmt(x.f26)+')';}).join('; ')+'. Ставить малые партии и наращивать, когда подтвердятся продажи.</p>';
+ t+='<p><b>«Столик Мольберт» — стратегическая ставка:</b> оставляем в полном плановом объёме (3 700 шт), несмотря на короткую историю продаж. Риск повышенный, но по решению руководства продукт приоритетный.</p>';
  t+='<p><b>Рекомендуемый план H2:</b> ~'+fmt(recTot)+' шт вместо '+fmt(planTot)+' (срезка завышенных). Главный резерв — новинки: при поэтапном вводе от факта план сократится ещё заметнее.</p>';
  document.getElementById('recNote').innerHTML=t;
 }
