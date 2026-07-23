@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>План продаж 2026 — Кабина FOXLIK</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/cabin.css">
+</head>
+<body>
+
+<div class="tophead">
+  <div class="bar1">
+    <a class="brand" href="index.html"><b>FOXLIK</b> КАБИНА</a>
+    <nav class="main">
+      <a href="index.html">Обзор</a>
+      <a href="plan-2026.html" class="on">План продаж 2026</a>
+      <a class="soon">Производство<i>скоро</i></a>
+      <a class="soon">Рынок WB<i>скоро</i></a>
+      <a class="soon">Деньги<i>скоро</i></a>
+    </nav>
+  </div>
+  <div class="hero">
+    <div class="q-label">Вопрос раздела</div>
+    <h1>Реалистичен ли план продаж на июль–декабрь 2026 — и выполняем ли мы его?</h1>
+    <div class="meta" id="meta"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="verdict" id="hero"></div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="controls">
+    <span class="seg" id="segMode">
+      <button data-v="u" class="on">Штуки</button><button data-v="m">Маржа ₽</button>
+    </span>
+    <span class="seg" id="segBasis">
+      <button data-v="plan" class="on">План</button><button data-v="rec">Рекомендуемый</button>
+    </span>
+    <button class="printbtn" onclick="window.print()">🖨 Печать / PDF</button>
+    <span class="hint" id="ctlHint"></span>
+  </div>
+
+  <section>
+    <div class="sec-head"><span class="n">1</span><h3>Как читать этот отчёт</h3></div>
+    <div class="howto">Мы <b>не экстраполируем годовой темп</b> — он раздут эффектом слабой базы H1-2025.
+      Для каждого товара строится <b>коридор ожиданий</b>: от «повторим факт первого полугодия» до
+      «факт H1-2026 × сезонность-2025» (сезонность = факт H2-25 ÷ факт H1-25 этого товара).
+      Вердикты: 🟢 внутри коридора · 🟡 выше до +30% · 🔴 выше +30% · 🔵 ниже · 🟣 новинка (истории нет).
+      Везде <b>факт — сплошная заливка, план — штриховка</b>; зелёная зона на шкалах — коридор.
+      Позиции, где план сохранён или назначен <b>решением руководства</b>, помечены бейджем «⚖ решение».
+      В режиме «Рекомендуемый» вердикты пересчитываются от срезанного плана.</div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">2</span><h3>Из чего состоит план H2 — светофор</h3></div>
+    <div class="howto" id="stkHow"></div>
+    <div class="stack" id="stack"></div>
+    <div class="legend" id="stkLeg"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">3</span><h3>План против коридора — все 28 позиций</h3></div>
+    <div class="howto">Доказательство в каждой строке: <b>факт H2-2025</b> (тот же сезон год назад),
+      <b>«к потолку»</b> — во сколько раз план выше потолка коридора, и <b>шкала</b>: зелёная зона —
+      коридор товара, сплошная полоска — факт H1-2026, штриховая — план H2.
+      <b>Клик по строке</b> — карточка: месяцы 2025 и 2026 парами и расчёт вердикта.</div>
+    <div class="chips" id="chips"></div>
+    <table>
+      <thead><tr>
+        <th>Позиция</th><th class="r">Факт H2-25</th><th class="r">Факт H1-26</th>
+        <th class="r" id="thPlan">План H2</th><th class="r">К потолку</th>
+        <th style="width:22%">Коридор: факт ▸ план</th><th>Вердикт</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">4</span><h3>Срез по категориям</h3></div>
+    <details class="fold"><summary>Показать (справочный блок)</summary>
+    <div class="howto">Три полосы: <b>факт H2-2025</b> (бронза — тот же сезон год назад),
+      <b>факт H1-2026</b> (синяя) и <b>план H2-2026</b> (штриховая). Видно, на чём стоит план
+      каждой категории и куда смещается ставка.</div>
+    <div id="cats"></div>
+    </details>
+  </section>
+
+  <section class="grow">
+    <div class="sec-head"><span class="n">5</span><h3>На чём держится рост — план H2-26 против факта H2-25</h3></div>
+    <details class="fold"><summary>Показать (справочный блок)</summary>
+    <div class="howto">Разница между планом на этот сезон и фактом того же сезона 2025 по позициям.
+      Фиолетовые — новинки: их прирост пока «бумажный». Сравнение сезон-к-сезону — та же логика,
+      что и в коридоре.</div>
+    <div id="grow"></div>
+    </details>
+  </section>
+
+  <section class="sac">
+    <div class="sec-head"><span class="n">6</span><h3>Очередность производства по марже — и сценарий мощности</h3></div>
+    <div class="howto">Товары выстроены в очередь по марже: <b>🥇 1-я</b> — от 2 000 ₽/шт ·
+      <b>🥈 2-я</b> — от 800 · <b>🥉 3-я</b> — до 800. <b>Двигайте ползунок</b> — «сколько штук цех
+      успевает за июль–декабрь»: мощность раздаётся сверху вниз по очереди, и видно, что успеваем
+      <b>полностью</b>, что <b>частично</b>, что <b>не влезло</b>. Оговорка: суммы ориентировочные
+      и верны, если трудозатраты на штуку сопоставимы.</div>
+    <div class="controls" style="margin-top:10px">
+      <span class="seg" id="segPrio">
+        <button data-v="unit" class="on">По марже на 1 шт</button><button data-v="vol">По марже со всего объёма</button>
+      </span>
+    </div>
+    <div class="caprow">
+      <input type="range" id="capSl">
+      <div class="capval num" id="capVal"></div>
+    </div>
+    <div class="capmarks" id="capMarks"></div>
+    <div class="howto" id="capSummary"></div>
+    <table class="sacT">
+      <thead><tr><th>Товар</th><th class="r">Маржа ₽/шт</th><th class="r">Очередь</th>
+        <th class="r">План H2</th><th class="r">В производство</th><th class="r">Маржа собрано</th>
+        <th>Статус</th></tr></thead>
+      <tbody id="sacBody"></tbody>
+    </table>
+    <div class="yoy" id="sacFoot"></div>
+  </section>
+
+  <section class="launch">
+    <div class="sec-head"><span class="n">7</span><h3>Запуск новинок — на чём держатся 🟣</h3></div>
+    <div class="howto" id="lnHow"></div>
+    <table>
+      <thead><tr><th>Позиция</th><th>Старт</th>
+        <th class="r">июл</th><th class="r">авг</th><th class="r">сен</th>
+        <th class="r">окт</th><th class="r">ноя</th><th class="r">дек</th><th class="r">Σ H2</th></tr></thead>
+      <tbody id="lnBody"></tbody>
+    </table>
+    <div class="yoy" id="lnCum"></div>
+    <div class="stress" id="lnStress"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">8</span><h3>Ход года и сезонность — план против факта, помесячно</h3></div>
+    <div class="howto">Столбики — 2026 (январь–июнь — факт, июль–декабрь — штриховка плана);
+      <b>бронзовая линия — сезонная кривая 2025</b>: видно, повторяет ли план форму прошлого сезона
+      или прыгает выше. С августа сюда ежемесячно ложится факт H2. Фильтр категорий (блок 3)
+      действует и здесь — выберите категорию и увидите её сезонность. Наведите на столбик — значения.</div>
+    <div class="yy" id="yy"></div>
+    <div class="leg2">
+      <span><span class="sw" style="background:none;border-top:2.5px solid var(--s2025);height:0;transform:translateY(-2px)"></span>сезонная кривая 2025 (факт)</span>
+      <span><span class="sw" style="background:var(--s2026)"></span>факт 2026</span>
+      <span><span class="sw" style="background:repeating-linear-gradient(45deg,var(--s2026) 0 4px,transparent 4px 8px);box-shadow:inset 0 0 0 1px var(--s2026)"></span>план 2026</span>
+    </div>
+    <div class="yoy" id="yyDelta"></div>
+  </section>
+
+  <section class="final">
+    <div class="sec-head"><span class="n">9</span><h3>Вывод и рекомендация</h3></div>
+    <h4>✅ Что предлагается решить руководству</h4>
+    <ol id="final"></ol>
+    <div id="finDetails"></div>
+  </section>
+
+</div>
+
+<footer id="foot"></footer>
+
+<script src="data/data.js"></script>
+<script src="assets/logic.js"></script>
+<script>
+(function(){
+ const C=window.CABIN, S=C.S, $=id=>document.getElementById(id);
+ const MON=['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+ const VCC={green:'var(--ok)',amber:'var(--warn)',red:'var(--crit)',info:'var(--info)',new:'var(--new)'};
+ const BC={green:'b-green',amber:'b-amber',red:'b-red',info:'b-info',new:'b-new'};
+ const RC={green:'r-green',amber:'r-amber',red:'r-red',info:'r-info'};
+ let catFilter='Все', vFilter=null, open=null, svOK=false;
+
+ const dEsc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+ const pct=(a,b)=>b>0?Math.round((a/b-1)*100):null;
+ const pctTxt=p=>p===null?'—':'<b class="'+(p>=0?'up':'down')+'">'+(p>=0?'+':'')+p+'%</b>';
+ const d=new Date(C.D.meta.sliceDate);
+ $('meta').textContent='Срез данных: '+('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+d.getFullYear()
+   +' · источник: таблица «План продаж 2026» · обновление по запросу';
+
+ /* --- самопроверка: страница обязана сходиться со слоем данных до единицы --- */
+ (function(){
+  const m=C.D.meta.totals;
+  const u={f25:0,f26H1:0,pH2:0};
+  C.items.forEach(i=>{u.f25+=i.f25T;u.f26H1+=i.f26H1;u.pH2+=i.pH2});
+  svOK=(u.f25===m.f25&&u.f26H1===m.f26h1&&u.pH2===m.planH2);
+  if(!svOK)console.error('СВЕРКА ПРОВАЛЕНА: страница='+JSON.stringify(u)+' data.js='+JSON.stringify(m));
+  else console.log('Сверка OK: '+u.f25+' / '+u.f26H1+' / '+u.pH2);
+ })();
+
+ const filtered=()=>C.items
+   .filter(i=>catFilter==='Все'||i.cat===catFilter)
+   .filter(i=>!vFilter||C.vOf(i)===vFilter);
+
+ function hero(){
+  const t=C.totals();
+  const above=t.cur>t.eH*1.05;
+  const unl=C.unlaunched();
+  const newU=C.items.filter(i=>C.vOf(i)==='new').reduce((s,i)=>s+C.money(i,C.planOf(i)),0);
+  const share=t.cur>0?Math.round(newU/t.cur*100):0;
+  const dom=Math.max(t.eH*1.15,t.cur*1.08,1);
+  const x=v=>Math.min(v/dom*100,99);
+  $('hero').className='verdict'+(above?'':' good');
+  $('hero').innerHTML='<div class="icon">'+(above?'⚠️':'✅')+'</div><div style="flex:1">'
+   +'<h2>'+(above?'План H2 выше реалистичного коридора — требует пересмотра'
+                :'План H2 внутри реалистичного коридора')+'</h2>'
+   +'<p>'+(S.basis==='plan'?'План':'Рекомендуемый план')+' на июль–декабрь — <b class="num">'+C.vf(t.cur)+'</b>'
+   +' при коридоре <b class="num">'+C.vf(t.eL)+'–'+C.vf(t.eH)+'</b>'
+   +(above?' (превышение потолка '+(t.eH>0?'×'+(t.cur/t.eH).toFixed(2):'—')+')':'')
+   +'. Прошлый H2 (факт 2025) — <b class="num">'+C.vf(t.f25H2)+'</b>.'
+   +' Новинки без истории — <b>'+share+'% плана</b>'
+   +(unl.u>0?', из них <b class="num">'+C.vf(unl.u)+'</b> ещё не запущено ('+unl.list.length+' поз.)':'')
+   +'.</p>'
+   +'<div class="hcorr">'
+   +'<div class="zone" style="left:'+x(t.eL)+'%;width:'+(x(t.eH)-x(t.eL))+'%"></div>'
+   +'<div class="zlab" style="left:'+x(t.eL)+'%">коридор '+C.vf(t.eL)+'–'+C.vf(t.eH)+'</div>'
+   +'<div class="mark" style="left:'+x(t.cur)+'%"></div>'
+   +'<div class="mlab" style="left:'+x(t.cur)+'%">'+(S.basis==='plan'?'ПЛАН':'РЕКОМ.')+' '+C.vf(t.cur)+'</div>'
+   +(S.basis==='plan'?'<div class="rmark" style="left:'+x(t.recH2)+'%"></div>'
+     +'<div class="rlab" style="left:'+x(t.recH2)+'%">реком. '+C.vf(t.recH2)+'</div>':'')
+   +'<div class="track"></div>'
+   +'</div></div>';
+ }
+
+ function kpis(){
+  const t=C.totals();
+  const gr=t.f25H1>0?Math.round((t.f26H1/t.f25H1-1)*100):0;
+  const risk=C.items.filter(i=>['red','amber','new'].includes(C.vOf(i)))
+    .reduce((s,i)=>s+C.money(i,C.planOf(i)),0);
+  $('kpis').innerHTML=
+   '<div class="kpi"><div class="t">Факт H2 2025</div><div class="v num">'+C.vf(t.f25H2)+'</div><div class="d">тот же сезон год назад</div></div>'
+  +'<div class="kpi"><div class="t">Факт H1 2026</div><div class="v num">'+C.vf(t.f26H1)+'</div><div class="d">+'+gr+'% к H1-25 (эффект базы!)</div></div>'
+  +'<div class="kpi acc"><div class="t">'+(S.basis==='plan'?'План H2 2026':'Реком. план H2')+'</div><div class="v num">'+C.vf(t.cur)+'</div><div class="d">'+pctTxt(pct(t.cur,t.f25H2))+' к факту H2-25</div></div>'
+  +'<div class="kpi"><div class="t">В риске 🔴🟡🟣</div><div class="v num">'+C.vf(risk)+'</div><div class="d">'+(t.cur>0?Math.round(risk/t.cur*100):0)+'% плана</div></div>'
+  +'<div class="kpi rec"><div class="t">Рекомендуемый</div><div class="v num">'+C.vf(t.recH2)+'</div><div class="d">🔴/🟡 срезаны до потолка</div></div>';
+ }
+
+ function stack(){
+  const t=C.totals(), parts=C.byVerdict(), unl=C.unlaunched();
+  $('stkHow').innerHTML='Ширина полосы = доля в '+(S.basis==='plan'?'плане':'рекомендуемом плане')
+    +' <b class="num">'+C.vf(t.cur)+'</b>. <b>Клик по цвету</b> — показать эти позиции в таблице ниже.';
+  $('stack').innerHTML=parts.map(p=>'<div style="background:'+VCC[p.v]+';width:'+(p.u/t.cur*100)+'%;cursor:pointer'
+    +(vFilter&&vFilter!==p.v?';opacity:.35':'')+'" data-v="'+p.v+'" title="'
+    +C.VL[p.v]+': '+C.vf(p.u)+' — клик для фильтра"></div>').join('');
+  $('stkLeg').innerHTML=parts.map(p=>'<span class="it" data-v="'+p.v+'" style="cursor:pointer'
+    +(vFilter&&vFilter!==p.v?';opacity:.45':'')+'"><span class="sw" style="background:'+VCC[p.v]+'"></span>'
+    +C.VE[p.v]+' '+C.VL[p.v]+' <span class="num">'+C.vf(p.u)+'</span><small>· '+p.n+' поз.'
+    +(p.v==='new'&&unl.u>0?', не запущено '+C.vf(unl.u):'')+'</small></span>').join('');
+  [$('stack'),$('stkLeg')].forEach(el=>el.querySelectorAll('[data-v]').forEach(x=>x.onclick=()=>{
+    vFilter=(vFilter===x.dataset.v)?null:x.dataset.v;open=null;render();
+    document.querySelector('table').scrollIntoView({behavior:'smooth',block:'nearest'});}));
+ }
+
+ function chips(){
+  const cats=['Все',...new Set(C.items.map(i=>i.cat))];
+  $('chips').innerHTML=cats.map(c=>'<button class="'+(c===catFilter?'on':'')+'" data-c="'+dEsc(c)+'">'+dEsc(c)+'</button>').join('')
+   +(vFilter?'<button class="on" data-x="1">'+C.VE[vFilter]+' '+C.VL[vFilter]+' ✕</button>':'');
+  $('chips').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    if(b.dataset.x)vFilter=null;else catFilter=b.dataset.c;open=null;render();});
+ }
+
+ function rcorr(it){
+  const p=C.money(it,C.planOf(it)), f=C.money(it,it.f26H1);
+  const lo=C.money(it,it.expLow||0), hi=it.expHigh!==null?C.money(it,it.expHigh):null;
+  const dom=Math.max(hi!==null?hi*1.2:0,p*1.08,f*1.08,1);
+  const x=v=>Math.min(v/dom*100,99);
+  return '<div class="rcorr">'
+   +(hi!==null?'<div class="zone" style="left:'+x(lo)+'%;width:'+Math.max(x(hi)-x(lo),1)+'%"></div>':'')
+   +(f>0?'<div class="fbar" style="width:'+x(f)+'%"></div>':'')
+   +(p>0?'<div class="pbar" style="width:'+x(p)+'%"></div>':'')
+   +'</div>';
+ }
+
+ function table(){
+  $('thPlan').textContent=S.basis==='plan'?'План H2':'Реком. H2';
+  const list=filtered().slice().sort((a,b)=>C.money(b,C.planOf(b))-C.money(a,C.planOf(a)));
+  $('tbody').innerHTML=list.map((it,ix)=>{
+   const p=C.money(it,C.planOf(it)), f=C.money(it,it.f26H1), v=C.vOf(it);
+   const r=C.ratioOf(it);
+   const badge=it.retired
+     ?'<span class="badge" style="color:#5a6472;background:#eef1f5">выведена?</span>'
+     :'<span class="badge '+BC[v]+'">'+C.VE[v]+' '+C.vlbl(it)+'</span>';
+   let row='<tr class="row" data-i="'+ix+'"><td>'+dEsc(it.name)
+    +(S.mode==='m'&&!it.margin?'<span class="nomarg">маржи нет → 0 ₽</span>':'')
+    +(it.ovrType?'<span class="ovrb" title="'+(it.ovrType==='verdict'?'вердикт назначен решением руководства':'план сохранён/задан решением руководства')+'">⚖ решение</span>':'')
+    +'<span class="cat">'+dEsc(it.cat)+'</span></td>'
+    +'<td class="r num">'+C.vf(C.money(it,it.f25H2))+'</td>'
+    +'<td class="r num">'+C.vf(f)+'</td>'
+    +'<td class="r num">'+C.vf(p)+'</td>'
+    +'<td class="r">'+(r!==null&&C.planOf(it)>0?'<span class="ratio '+(RC[v]||'')+'">×'+r.toFixed(2)+'</span>':'—')+'</td>'
+    +'<td>'+rcorr(it)+'</td>'
+    +'<td>'+badge+'</td></tr>';
+   if(open===it.name)row+=card(it);
+   return row;
+  }).join('');
+  $('tbody').querySelectorAll('tr.row').forEach(tr=>tr.onclick=()=>{
+   const it=list[+tr.dataset.i]; open=(open===it.name)?null:it.name; render();
+  });
+ }
+
+ function card(it){
+  const mon=C.monOf(it), mmax=Math.max(...it.f25,...mon,1);
+  const grp=[];
+  for(let m=0;m<12;m++){
+   const v25=it.f25[m], v26=mon[m];
+   grp.push('<div class="grp"><div class="duo">'
+    +'<div class="b b25" style="height:'+(v25/mmax*100)+'%" title="'+MON[m]+' 2025 · '+C.vf(C.money(it,v25))+'">'
+    +(v25>0?'<span class="vv v25 num">'+C.vf(C.money(it,v25))+'</span>':'')+'</div>'
+    +'<div class="b '+(m<6?'b26':'bp')+'" style="height:'+(v26/mmax*100)+'%" title="'+MON[m]+' 2026 · '+C.vf(C.money(it,v26))+'">'
+    +(v26>0?'<span class="vv num">'+C.vf(C.money(it,v26))+'</span>':'')+'</div>'
+    +'</div><div class="lab">'+MON[m].toLowerCase()+'</div></div>');
+  }
+  let why;
+  if(it.newp){
+   why='<b>Новинка</b> — истории 2025 нет, коридор не строится, решение по плану принимается отдельно. '
+    +(it.f26H1>0?'Калибровка: первые продажи <b class="num">'+C.vf(C.money(it,it.f26H1))+'</b> за '
+      +it.y26.slice(0,6).filter(x=>x>0).length+' мес против плана <b class="num">'+C.vf(C.money(it,it.pH2))+'</b> на 6 мес.'
+      :'Продаж ещё не было — весь план держится на сроке запуска.');
+  }else if(it.expHigh!==null){
+   const r=C.ratioOf(it);
+   why='Потолок = факт H1-26 <b class="num">'+C.vf(C.money(it,it.f26H1))+'</b> × сезонность-25 <b>×'+it.K.toFixed(2)
+    +'</b> (H2-25 '+C.vf(C.money(it,it.f25H2))+' ÷ H1-25 '+C.vf(C.money(it,it.f25H1))+') = <b class="num">'
+    +C.vf(C.money(it,Math.round(it.expHigh)))+'</b>. '
+    +(C.planOf(it)>0?(S.basis==='plan'?'План':'Реком.')+' <b class="num">'+C.vf(C.money(it,C.planOf(it)))+'</b> = <b>×'
+    +r.toFixed(2)+'</b> к потолку → '+C.VE[C.vOf(it)]+' <b>'+C.vlbl(it)+'</b>.'
+    :'Плана на H2 нет'+(it.retired?' — похоже, позиция выведена (уточнить у владельца).':'.'));
+  }else{
+   why='Истории H1-2025 нет — коридор не строится; вердикт по наличию продаж 2026.';
+  }
+  const yoyM=[4,5].map(m=>MON[m].toLowerCase()+' '+pctTxt(pct(it.y26[m],it.f25[m]))).join(' · ');
+  const yoyH2=[6,7,8,9,10,11].map(m=>MON[m].toLowerCase()+' '+pctTxt(pct(mon[m],it.f25[m]))).join(' · ');
+  return '<tr class="card"><td colspan="7">'
+   +'<div class="cfacts">'
+   +'<span>'+(it.art?'Арт. WB: <b>'+dEsc(it.art)+'</b>':'Артикул: <b>ещё не присвоен</b>')+'</span>'
+   +'<span>Маржа: <b>'+(it.margin?(it.mEst?'~':'')+C.fmt(it.margin)+' ₽/шт':'не известна — в деньгах = 0')
+   +'</b>'+(it.mNote?' <span style="color:var(--ink3)">('+dEsc(it.mNote)+')</span>':'')+'</span>'
+   +'<span>Факт 2025: <b class="num">'+C.vf(C.money(it,it.f25T))+'</b> (H1 '+C.vf(C.money(it,it.f25H1))+' · H2 '+C.vf(C.money(it,it.f25H2))+')</span>'
+   +'<span>Факт H1-2026: <b class="num">'+C.vf(C.money(it,it.f26H1))+'</b></span>'
+   +'<span>План H2: <b class="num">'+C.vf(C.money(it,it.pH2))+'</b> · реком.: <b class="num">'+C.vf(C.money(it,it.recH2))+'</b></span>'
+   +(it.ovrType?'<span class="ovrb">⚖ '+(it.ovrType==='verdict'?'вердикт назначен решением руководства':'план сохранён решением руководства')+'</span>':'')
+   +'</div>'
+   +'<div class="pairs">'+grp.join('')+'</div>'
+   +'<div class="why">'+why+'</div>'
+   +'<div class="yoy">Темп к 2025: '+yoyM+' &nbsp;·&nbsp; план H2 к тем же месяцам 2025: '+yoyH2+'</div>'
+   +'</td></tr>';
+ }
+
+ function cats(){
+  const L=C.byCat(filtered()), mx=Math.max(...L.map(c=>Math.max(c.plan,c.f26H1,c.f25H2)),1);
+  $('cats').innerHTML=L.map(c=>'<div class="catrow"><div class="name">'+dEsc(c.cat)+'<small>'+c.n+' поз.</small></div>'
+   +'<div class="bars">'
+   +'<div class="tr" title="факт H2-2025"><div class="f" style="width:'+(c.f25H2/mx*100)+'%;background:var(--s2025)"></div></div>'
+   +'<div class="tr" title="факт H1-2026"><div class="f" style="width:'+(c.f26H1/mx*100)+'%"></div></div>'
+   +'<div class="tr" title="план H2-2026"><div class="p" style="width:'+(c.plan/mx*100)+'%"></div></div></div>'
+   +'<div class="nums num">H2-25: '+C.vf(c.f25H2)+'<br>план: '+C.vf(c.plan)+' ('+ (pct(c.plan,c.f25H2)===null?'—':(pct(c.plan,c.f25H2)>=0?'+':'')+pct(c.plan,c.f25H2)+'%')+')</div></div>').join('');
+ }
+
+ function grow(){
+  const G=C.growth().filter(g=>g.d!==0);
+  const top=G.slice(0,8), mx=Math.max(...G.map(g=>Math.abs(g.d)),1);
+  const rest=G.slice(8).reduce((s,g)=>s+g.d,0);
+  $('grow').innerHTML=top.map(g=>'<div class="grr"><div>'+dEsc(g.it.name)
+   +(g.it.newp?' <span class="badge b-new" style="font-size:10.5px">🟣</span>':'')+'</div>'
+   +'<div class="tr"><div class="bb" style="left:0;width:'+(Math.abs(g.d)/mx*100)+'%;background:'
+   +(g.it.newp?'var(--new)':(g.d>=0?'var(--s2026)':'var(--s2025)'))+'"></div></div>'
+   +'<div class="nums num">'+(g.d>=0?'+':'−')+C.vf(Math.abs(g.d))+'</div></div>').join('')
+   +(G.length>8?'<div class="grr"><div style="color:var(--ink3)">остальные '+(G.length-8)+' позиций</div><div></div>'
+   +'<div class="nums num">'+(rest>=0?'+':'−')+C.vf(Math.abs(rest))+'</div></div>':'');
+ }
+
+ let cap=null, prioMode='unit';
+ const PLBL={1:'🥇 1-я',2:'🥈 2-я',3:'🥉 3-я'};
+ const fmtRub=n=>n>=1e6?(n/1e6).toFixed(2).replace('.',',')+' млн ₽':C.fmt(n)+' ₽';
+ function sac(){
+  const Q=C.prodQueue(prioMode);
+  const capTot=Q.reduce((s,r)=>s+r.plan,0);
+  const rec=C.items.reduce((s,i)=>s+i.recH2,0);
+  const sl=$('capSl');
+  if(!sl.dataset.init){sl.dataset.init='1';sl.min=0;sl.max=capTot;sl.step=100;sl.value=capTot;cap=capTot;
+   sl.oninput=()=>{cap=+sl.value;sac();};}
+  $('capVal').textContent=C.fmt(cap)+' шт';
+  $('capMarks').innerHTML='Поставить на: '
+   +'<button data-c="'+capTot+'">полный план '+C.fmt(capTot)+'</button>'
+   +'<button data-c="'+rec+'">реалистичный спрос '+C.fmt(rec)+'</button>';
+  $('capMarks').querySelectorAll('button').forEach(b=>b.onclick=()=>{cap=+b.dataset.c;sl.value=cap;sac();});
+  /* раздача мощности сверху вниз по очереди */
+  let rem=cap,got=0;
+  const rows=Q.map(r=>{const a=Math.max(0,Math.min(r.pour,rem));rem-=a;got+=a*r.mgn;
+   return Object.assign({alloc:a},r);});
+  const full=rows.filter(r=>r.alloc>=r.pour).length,
+        part=rows.filter(r=>r.alloc>0&&r.alloc<r.pour).length,
+        none=rows.filter(r=>r.alloc===0).length,
+        exc=rows.reduce((s,r)=>s+r.excess,0);
+  $('capSummary').innerHTML='При мощности <b class="num">'+C.fmt(cap)+' шт</b> соберём маржи ≈ '
+   +'<b style="color:var(--ok,#1a7a3a)">'+fmtRub(got)+'</b> (ориентировочно). Полностью успеваем '
+   +'<b style="color:var(--ok,#1a7a3a)">'+full+'</b>, частично <b style="color:#8a5c00">'+part
+   +'</b>, не влезло <b style="color:#a32424">'+none+'</b> из '+rows.length+' позиций.'
+   +(exc>0?' Излишки 🔴🟡 сверх потолка спроса — <b class="num">'+C.fmt(exc)
+   +' шт</b> — в производство не наливаем (спрос не подтверждён).':'');
+  const mMax=Math.max(...rows.map(r=>r.mgn),1);
+  $('sacBody').innerHTML=rows.map(r=>{
+   const st=r.alloc>=r.pour?['полностью','b-green']:r.alloc>0?['частично','b-amber']:['не влезло','b-red'];
+   return '<tr><td>'+dEsc(r.it.name)+' '+C.VE[C.vOf(r.it)]
+    +(r.it.ovrType?'<span class="ovrb" title="решение руководства по этой позиции">⚖</span>':'')
+    +(r.it.mNote?'<span class="mnote">'+dEsc(r.it.mNote)+'</span>':'')+'</td>'
+    +'<td class="r num" style="white-space:nowrap"><span class="mbar" style="width:'+(r.mgn/mMax*52)+'px"></span>'
+    +(r.mgn?(r.it.mEst?'<span class="mq" title="оценка пользователя">~</span>':'')+C.fmt(r.mgn)
+      :'<span class="mq" title="маржа неизвестна">?</span>')+'</td>'
+    +'<td class="r" style="white-space:nowrap">'+(r.tier?PLBL[r.tier]:'<span class="mq">?</span>')+'</td>'
+    +'<td class="r num">'+C.fmt(r.plan)+'</td>'
+    +'<td class="r num"><b>'+C.fmt(r.alloc)+'</b>'
+    +(r.excess>0?'<span class="mnote">излишек −'+C.fmt(r.excess)+' не производим</span>':'')+'</td>'
+    +'<td class="r num">'+(r.mgn?fmtRub(r.alloc*r.mgn):'—')+'</td>'
+    +'<td><span class="badge '+st[1]+'">'+st[0]+'</span></td></tr>';
+  }).join('');
+  $('sacFoot').innerHTML='Очередь по '+(prioMode==='unit'?'марже на 1 шт (цех ограничен в штуках)'
+    :'марже со всего объёма (маржа/шт × план)')+'. «⚖» — по позиции есть решение руководства.'
+   +' «?» — маржа неизвестна (уточнить в таблице), позиция поставлена в конец очереди.'
+   +' Реалистичный спрос '+C.fmt(rec)+' шт = план, где 🔴/🟡 срезаны до потолка коридора,'
+   +' новинки — до стартовых партий (кроме ⚖-решений).';
+ }
+
+ function launch(){
+  const L=C.launches();
+  const t=C.totals();
+  $('lnHow').innerHTML='План на <b>незапущенных</b> новинках: <b class="num">'
+   +C.vf(L.rows.reduce((s,r)=>s+C.money(r.it,r.sum),0))+'</b> ('
+   +(t.pH2>0?Math.round(L.rows.reduce((s,r)=>s+C.money(r.it,r.sum),0)/t.pH2*100):0)
+   +'% плана H2). Каждая строка — когда позиция должна стартовать и сколько давать по месяцам. '
+   +'Новинки с первыми продажами (Столик Мольберт и др.) — в таблице блока 3.';
+  $('lnBody').innerHTML=L.rows.map(r=>'<tr><td>'+dEsc(r.it.name)+'</td>'
+   +'<td class="st">'+(r.start>=0?MON[r.start]:'—')+'</td>'
+   +r.mon.map(v=>'<td class="r num mcell'+(v===0?' z':'')+'">'+(v===0?'·':C.vf(C.money(r.it,v)))+'</td>').join('')
+   +'<td class="r num"><b>'+C.vf(C.money(r.it,r.sum))+'</b></td></tr>').join('');
+  $('lnCum').innerHTML='Накопленный план на незапущенном к концу месяца: '
+   +L.cum.map((v,m)=>MON[6+m].toLowerCase()+' <b class="num">'+C.fmt(v)+'</b>').join(' · ');
+  $('lnStress').innerHTML='<b>Стресс-тест сроков:</b> сдвиг всех запусков на 1 месяц — план года теряет '
+   +'<b class="num">−'+C.fmt(L.shift1)+' шт</b> (хвост кривой уходит за декабрь); на 2 месяца — '
+   +'<b class="num">−'+C.fmt(L.shift2)+' шт</b>.';
+ }
+
+ function year(){
+  const {t25,t26}=C.monthTotals(filtered()), mx=Math.max(...t25,...t26,1);
+  const pts=t25.map((v,m)=>((m+0.5)/12*100).toFixed(2)+','+(100-v/mx*100).toFixed(2)).join(' ');
+  $('yy').innerHTML='<svg viewBox="0 0 100 100" preserveAspectRatio="none">'
+   +'<polyline points="'+pts+'" fill="none" stroke="var(--s2025)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>'
+   +t25.map((v,m)=>'<div class="grp"><div class="pair">'
+   +'<div class="col '+(m<6?'f26':'p26')+'" style="height:'+(t26[m]/mx*100)+'%" title="'+MON[m]+' 2026 · '+C.vf(t26[m])+' · факт 2025 · '+C.vf(v)+'"></div>'
+   +'</div><div class="lab">'+MON[m]+'</div></div>').join('');
+  $('yyDelta').innerHTML='2026 к тому же месяцу 2025: '
+   +t25.map((v,m)=>MON[m].toLowerCase()+' '+pctTxt(pct(t26[m],v))).join(' · ');
+ }
+
+ function fin(){
+  const t=C.totals(), unl=C.unlaunched();
+  const cut=C.items.filter(i=>i.recH2<i.pH2)
+    .sort((a,b)=>(b.pH2-b.recH2)-(a.pH2-a.recH2));
+  const kept=C.items.filter(i=>i.ovrType==='plan'&&i.pH2>0);
+  const news=C.items.filter(i=>i.verdict==='new'&&i.pH2>0);
+  const newU=news.reduce((s,i)=>s+C.money(i,i.pH2),0);
+  const risk=news.slice().sort((a,b)=>C.money(b,b.pH2)-C.money(a,a.pH2))[0];
+  $('final').innerHTML=
+   '<li>Утвердить план H2 в объёме <b class="num">'+C.vf(t.recH2)+'</b> — срезано '
+   +'<b class="num">'+C.vf(t.pH2-t.recH2)+'</b> у '+cut.length+' позиций (список ниже).</li>'
+   +'<li>Новинки — <b class="num">'+C.vf(newU)+'</b> ('+news.length+' поз., '
+   +Math.round(newU/t.pH2*100)+'% плана): '+unl.list.length+' поз. ещё не запущены '
+   +'(<b class="num">'+C.vf(unl.u)+'</b>) — план держится на сроках запуска (блок 7).</li>'
+   +(risk?'<li>Главный риск — <b>'+dEsc(risk.name)+'</b>: план <b class="num">'+C.vf(C.money(risk,risk.pH2))
+   +'</b> при факте <b class="num">'+C.vf(C.money(risk,risk.f26H1))+'</b> за два месяца.</li>':'')
+   +(kept.length?'<li>Решением руководства сохранены в полном объёме (⚖): '
+   +kept.map(i=>dEsc(i.name)+' ('+C.fmt(i.pH2)+')').join(', ')+' — риск принят осознанно.</li>':'');
+  $('finDetails').innerHTML='<details><summary>Показать все срезаемые позиции ('+cut.length+')</summary><ul>'
+   +cut.map(i=>'<li>'+C.VE[i.verdict]+' '+dEsc(i.name)+': <span class="num">'+C.fmt(i.pH2)+' → '
+   +C.fmt(i.recH2)+'</span> (−'+C.fmt(i.pH2-i.recH2)+')</li>').join('')+'</ul></details>';
+ }
+
+ function render(){
+  hero();kpis();stack();chips();table();cats();grow();sac();launch();year();fin();
+  $('ctlHint').textContent=S.mode==='m'?'В деньгах: позиции без маржи помечены в таблице и считаются как 0 ₽.':'';
+  $('foot').innerHTML=dEsc(C.D.meta.source)+' · данные: data/data.js (сборка tools/build_data.py)<br>'
+   +'<span class="stamp'+(svOK?'':' bad')+'">'+(svOK?'✓ Сверка с таблицей: суммы сходятся до единицы · срез '
+   +C.D.meta.sliceDate:'⚠ СВЕРКА ПРОВАЛЕНА — данные не публиковать')+'</span>';
+ }
+ function seg(el,key){el.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  S[key]=b.dataset.v;el.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));render();});}
+ seg($('segMode'),'mode');seg($('segBasis'),'basis');
+ $('segPrio').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  prioMode=b.dataset.v;
+  $('segPrio').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));sac();});
+ render();
+})();
+</script>
+</body>
+</html>

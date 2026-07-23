@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Обзор — Кабина FOXLIK</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/cabin.css">
+</head>
+<body>
+
+<div class="tophead">
+  <div class="bar1">
+    <a class="brand" href="index.html"><b>FOXLIK</b> КАБИНА</a>
+    <nav class="main">
+      <a href="index.html" class="on">Обзор</a>
+      <a href="plan-2026.html">План продаж 2026</a>
+      <a class="soon">Производство<i>скоро</i></a>
+      <a class="soon">Рынок WB<i>скоро</i></a>
+      <a class="soon">Деньги<i>скоро</i></a>
+    </nav>
+  </div>
+  <div class="hero">
+    <div class="q-label">Кабина управления</div>
+    <h1>Всё ли идёт по плану — и где горит?</h1>
+    <div class="meta" id="meta"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="verdict" id="hero"></div>
+
+  <div class="kpis" id="kpis" style="grid-template-columns:repeat(4,1fr)"></div>
+
+  <div class="secgrid">
+    <a class="seccard" href="plan-2026.html">
+      <div class="q">Раздел · активен</div>
+      <h3>📊 План продаж 2026</h3>
+      <p>Реалистичен ли план июль–декабрь и выполняем ли мы его? Коридор по каждому товару,
+         светофор рисков, рекомендуемый план.</p>
+      <div class="st" id="planSt"></div>
+    </a>
+    <a class="seccard off">
+      <div class="q">Раздел · скоро</div>
+      <h3>🏭 Производство и запуски</h3>
+      <p>Что и сколько цех должен сделать по месяцам, успеваем ли по новинкам.</p>
+    </a>
+    <a class="seccard off">
+      <div class="q">Раздел · скоро</div>
+      <h3>🛒 Рынок WB</h3>
+      <p>Живая картина продаж: динамика, остатки, что кончается. Подключается по API.</p>
+    </a>
+    <a class="seccard off">
+      <div class="q">Раздел · скоро</div>
+      <h3>💰 Деньги и маржа</h3>
+      <p>Что приносит деньги, а что возит воздух. Потребует заполнить маржу у 8 позиций.</p>
+    </a>
+  </div>
+
+</div>
+
+<footer id="foot"></footer>
+
+<script src="data/data.js"></script>
+<script src="assets/logic.js"></script>
+<script>
+(function(){
+ const C=window.CABIN,$=id=>document.getElementById(id);
+ const t=C.totals(), unl=C.unlaunched();
+ const d=new Date(C.D.meta.sliceDate);
+ $('meta').textContent='Срез данных: '+('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+d.getFullYear()+' · обновление по запросу';
+ const above=t.pH2>t.eH*1.05;
+ $('hero').className='verdict'+(above?'':' good');
+ $('hero').innerHTML='<div class="icon">'+(above?'⚠️':'✅')+'</div><div>'
+  +'<h2>'+(above?'Сигнал: план продаж H2 выше реалистичного коридора':'План продаж в коридоре')+'</h2>'
+  +'<p>План июль–декабрь <b class="num">'+C.fmt(t.pH2)+'</b> шт при коридоре <b class="num">'
+  +C.fmt(t.eL)+'–'+C.fmt(t.eH)+'</b>; рекомендуемый — <b class="num">'+C.fmt(t.recH2)+'</b>. '
+  +'Не запущено новинок на <b class="num">'+C.fmt(unl.u)+'</b> шт ('+unl.list.length+' поз.). '
+  +'Детали — в разделе «План продаж 2026».</p></div>';
+ const gr=Math.round((t.f26H1/t.f25H1-1)*100);
+ $('kpis').innerHTML=
+  '<div class="kpi"><div class="t">Факт 2025</div><div class="v num">'+C.fmt(t.f25)+'</div><div class="d">шт за год</div></div>'
+ +'<div class="kpi"><div class="t">Факт H1 2026</div><div class="v num">'+C.fmt(t.f26H1)+'</div><div class="d">'+(gr>=0?'+':'')+gr+'% к H1 2025</div></div>'
+ +'<div class="kpi acc"><div class="t">План H2 2026</div><div class="v num">'+C.fmt(t.pH2)+'</div><div class="d">июль–декабрь</div></div>'
+ +'<div class="kpi rec"><div class="t">Рекомендуемый H2</div><div class="v num">'+C.fmt(t.recH2)+'</div><div class="d">по методике коридора</div></div>';
+ const parts=C.byVerdict();
+ $('planSt').innerHTML=parts.map(p=>C.VE[p.v]+' '+p.n).join(' · ')+' · план '+C.fmt(t.pH2)+' шт';
+ $('foot').textContent=C.D.meta.source+' · срез '+C.D.meta.sliceDate;
+})();
+</script>
+</body>
+</html>
