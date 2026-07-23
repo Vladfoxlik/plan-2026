@@ -187,12 +187,25 @@ window.CABIN = (function () {
         ? Math.min(i.pH2, Math.max(Math.round(i.expHigh || 0), i.recH2))
         : i.pH2;
       return { it: i, mgn: i.margin || 0, plan: i.pH2, pour,
-               excess: i.pH2 - pour, vol: (i.margin || 0) * i.pH2,
-               tier: i.margin ? (i.margin >= TH1 ? 1 : i.margin >= TH2 ? 2 : 3) : null };
+               excess: i.pH2 - pour, vol: (i.margin || 0) * i.pH2, tier: null };
     });
     L.sort((a, b) => (a.mgn === 0 ? 1 : 0) - (b.mgn === 0 ? 1 : 0)
       || (mode === 'vol' ? b.vol - a.vol : b.mgn - a.mgn)
       || b.plan - a.plan);
+    /* Медали по метрике режима — всегда монотонны порядку очереди:
+       unit — пороги ₽/шт (как v2.1); vol — ABC/Парето по кумулятивной валовой марже
+       (🥇 до 50% нарастающим · 🥈 до 80% · 🥉 хвост). Позиция без маржи → tier null. */
+    if (mode === 'vol') {
+      const tot = L.reduce((s, r) => s + r.vol, 0) || 1;
+      let cum = 0;
+      L.forEach(r => {
+        if (r.mgn === 0) { r.tier = null; return; }
+        cum += r.vol; const p = cum / tot;
+        r.tier = p <= 0.5 ? 1 : p <= 0.8 ? 2 : 3;
+      });
+    } else {
+      L.forEach(r => { r.tier = r.mgn ? (r.mgn >= TH1 ? 1 : r.mgn >= TH2 ? 2 : 3) : null; });
+    }
     return L;
   }
 

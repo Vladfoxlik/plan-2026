@@ -247,6 +247,12 @@ footer{max-width:1100px;margin:34px auto 0;padding:0 36px;font-size:12px;color:v
 .sacT .mq{color:var(--ink3);font-weight:600}
 .sacT .mbar{display:inline-block;height:8px;border-radius:4px;background:var(--s2026);
   opacity:.35;margin-right:7px;vertical-align:baseline}
+/* подсветка активной метрики (по чему сейчас отсортирована очередь) */
+.sacT th.mact{color:var(--s2026);text-decoration:underline;text-underline-offset:3px}
+.sacT th.mdim{color:var(--ink3);font-weight:400}
+.sacT td.mact{font-weight:700;color:var(--ink)}
+.sacT td.mdim{color:var(--ink3)}
+.sacT td.mdim .mbar{opacity:.18}
 .caprow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0 4px}
 .caprow input[type=range]{flex:1;min-width:280px;accent-color:var(--s2026)}
 .caprow .capval{font-weight:700;color:var(--s2026);font-size:18px;min-width:110px}

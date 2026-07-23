@@ -101,8 +101,7 @@
 
   <section class="sac">
     <div class="sec-head"><span class="n">6</span><h3>Очередность производства по марже — и сценарий мощности</h3></div>
-    <div class="howto">Товары выстроены в очередь по марже: <b>🥇 1-я</b> — от 2 000 ₽/шт ·
-      <b>🥈 2-я</b> — от 800 · <b>🥉 3-я</b> — до 800. <b>Двигайте ползунок</b> — «сколько штук цех
+    <div class="howto"><span id="sacLeg"></span> <b>Двигайте ползунок</b> — «сколько штук цех
       успевает за июль–декабрь»: мощность раздаётся сверху вниз по очереди, и видно, что успеваем
       <b>полностью</b>, что <b>частично</b>, что <b>не влезло</b>. Оговорка: суммы ориентировочные
       и верны, если трудозатраты на штуку сопоставимы.</div>
@@ -118,8 +117,8 @@
     <div class="capmarks" id="capMarks"></div>
     <div class="howto" id="capSummary"></div>
     <table class="sacT">
-      <thead><tr><th>Товар</th><th class="r">Маржа ₽/шт</th><th class="r">Очередь</th>
-        <th class="r">План H2</th><th class="r">В производство</th><th class="r">Маржа собрано</th>
+      <thead><tr><th>Товар</th><th class="r" id="thU">Маржа ₽/шт</th><th class="r">Очередь</th>
+        <th class="r">План H2</th><th class="r">В производство</th><th class="r" id="thV">Маржа собрано</th>
         <th>Статус</th></tr></thead>
       <tbody id="sacBody"></tbody>
     </table>
@@ -378,6 +377,11 @@
  const fmtRub=n=>n>=1e6?(n/1e6).toFixed(2).replace('.',',')+' млн ₽':C.fmt(n)+' ₽';
  function sac(){
   const Q=C.prodQueue(prioMode);
+  const um=prioMode==='unit';                       // активная метрика: unit=₽/шт, vol=со всего объёма
+  $('thU').className='r '+(um?'mact':'mdim'); $('thV').className='r '+(um?'mdim':'mact');
+  $('sacLeg').innerHTML= um
+   ? 'Очередь по <b>марже за 1 шт</b>: <b>🥇</b> — от 2 000 ₽/шт · <b>🥈</b> — от 800 · <b>🥉</b> — до 800.'
+   : 'Очередь по <b>марже со всего объёма</b> (ABC-вклад): <b>🥇</b> дают вместе ~50% всей маржи · <b>🥈</b> — до 80% · <b>🥉</b> — хвост.';
   const capTot=Q.reduce((s,r)=>s+r.plan,0);
   const rec=C.items.reduce((s,i)=>s+i.recH2,0);
   const sl=$('capSl');
@@ -408,14 +412,14 @@
    return '<tr><td>'+dEsc(r.it.name)+' '+C.VE[C.vOf(r.it)]
     +(r.it.ovrType?'<span class="ovrb" title="решение руководства по этой позиции">⚖</span>':'')
     +(r.it.mNote?'<span class="mnote">'+dEsc(r.it.mNote)+'</span>':'')+'</td>'
-    +'<td class="r num" style="white-space:nowrap"><span class="mbar" style="width:'+(r.mgn/mMax*52)+'px"></span>'
+    +'<td class="r num '+(um?'mact':'mdim')+'" style="white-space:nowrap"><span class="mbar" style="width:'+(r.mgn/mMax*52)+'px"></span>'
     +(r.mgn?(r.it.mEst?'<span class="mq" title="оценка пользователя">~</span>':'')+C.fmt(r.mgn)
       :'<span class="mq" title="маржа неизвестна">?</span>')+'</td>'
     +'<td class="r" style="white-space:nowrap">'+(r.tier?PLBL[r.tier]:'<span class="mq">?</span>')+'</td>'
     +'<td class="r num">'+C.fmt(r.plan)+'</td>'
     +'<td class="r num"><b>'+C.fmt(r.alloc)+'</b>'
     +(r.excess>0?'<span class="mnote">излишек −'+C.fmt(r.excess)+' не производим</span>':'')+'</td>'
-    +'<td class="r num">'+(r.mgn?fmtRub(r.alloc*r.mgn):'—')+'</td>'
+    +'<td class="r num '+(um?'mdim':'mact')+'">'+(r.mgn?fmtRub(r.alloc*r.mgn):'—')+'</td>'
     +'<td><span class="badge '+st[1]+'">'+st[0]+'</span></td></tr>';
   }).join('');
   $('sacFoot').innerHTML='Очередь по '+(prioMode==='unit'?'марже на 1 шт (цех ограничен в штуках)'
